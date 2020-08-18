@@ -1,8 +1,9 @@
-package Model;
+package Model.SetPrecision;
 
 import Model.SimpleDouble.SimpleDoubleCalculator;
 import Model.SimpleDouble.SimpleDoubleCalculatorImpl;
-import java.text.DecimalFormat;
+import java.math.BigDecimal;
+import org.apache.commons.math3.util.Precision;
 
 /**
  * An implementation of the {@link SetPrecisionCalculator} interface. This class has a default
@@ -15,20 +16,22 @@ public class SetPrecisionCalculatorImpl implements SetPrecisionCalculator {
 
   private final SimpleDoubleCalculator sDC;
   private int precision;
-  private final DecimalFormat df;
 
+  /**
+   * Default constructor.
+   */
   public SetPrecisionCalculatorImpl() {
     this.sDC = new SimpleDoubleCalculatorImpl();
     this.precision = 5;
-    this.df = new DecimalFormat();
-    this.updateFormatter();
   }
 
+  /**
+   * Constructor that creates an object with a given precision in range.
+   * @param p the precision in number of digits after the decimal point.
+   */
   public SetPrecisionCalculatorImpl(int p) {
     this.sDC = new SimpleDoubleCalculatorImpl();
     this.setPrecision(p);
-    this.df = new DecimalFormat();
-    this.updateFormatter();
   }
 
   @Override
@@ -38,30 +41,27 @@ public class SetPrecisionCalculatorImpl implements SetPrecisionCalculator {
           + "must be a non-negative integer less than 11");
     }
     this.precision = p;
-    this.updateFormatter();
-  }
-
-  private void updateFormatter() {
-    StringBuilder pattern = new StringBuilder("#.");
-    for (int i = 0; i < precision; i++) {
-      pattern.append("#");
-    }
-    df.applyPattern(pattern.toString());
   }
 
   @Override
   public double add(double x, double y) {
-    return Double.parseDouble(df.format(this.sDC.add(x, y)));
+    return Precision.round(this.sDC.add(x, y),
+        this.precision,
+        BigDecimal.ROUND_HALF_UP);
   }
 
   @Override
   public double sub(double x, double y) {
-    return Double.parseDouble(df.format(this.sDC.sub(x, y)));
+    return Precision.round(this.sDC.sub(x, y),
+        this.precision,
+        BigDecimal.ROUND_HALF_UP);
   }
 
   @Override
   public double multi(double x, double y) {
-    return Double.parseDouble(df.format(this.sDC.multi(x, y)));
+    return Precision.round(this.sDC.multi(x, y),
+        this.precision,
+        BigDecimal.ROUND_HALF_UP);
   }
 
   @Override
@@ -69,7 +69,9 @@ public class SetPrecisionCalculatorImpl implements SetPrecisionCalculator {
     if (Math.abs(y) < Math.pow(10, -1 * precision)) {
       throw new IllegalArgumentException("Cannot divide by Zero.");
     } else {
-      return Double.parseDouble(df.format(x / y));
+      return Precision.round(this.sDC.divide(x, y),
+          this.precision,
+          BigDecimal.ROUND_HALF_UP);
     }
   }
 }
