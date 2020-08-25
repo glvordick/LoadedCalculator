@@ -2,20 +2,46 @@ import static org.junit.Assert.*;
 
 import Model.SetPrecision.SetPrecisionCalculator;
 import Model.SetPrecision.SetPrecisionCalculatorImpl;
+import Model.SimpleDouble.SimpleDoubleCalculator;
+import Model.SimpleDouble.SimpleDoubleCalculatorImpl;
 import org.junit.Before;
 import org.junit.Test;
 
 public class SetPrecisionCalculatorImplTest {
   SetPrecisionCalculator spc1;
   SetPrecisionCalculator spc2;
+  SetPrecisionCalculator spc3;
+  SetPrecisionCalculator spc4;
 
   /**
-   * Showcasing both constructors for the {@link SetPrecisionCalculatorImpl} class.
+   * Showcasing all four constructors for the {@link SetPrecisionCalculatorImpl} class.
    */
   @Before
   public void init() {
     spc1 = new SetPrecisionCalculatorImpl();
     spc2 = new SetPrecisionCalculatorImpl(3);
+    spc3 =  new SetPrecisionCalculatorImpl(new SimpleDoubleCalculator() {
+      @Override
+      public double add(double x, double y) {
+        return 42;
+      }
+
+      @Override
+      public double sub(double x, double y) {
+        return 42;
+      }
+
+      @Override
+      public double multi(double x, double y) {
+        return 42;
+      }
+
+      @Override
+      public double divide(double x, double y) throws IllegalArgumentException {
+        return 42;
+      }
+    });
+    spc4 = new SetPrecisionCalculatorImpl( 7, new SimpleDoubleCalculatorImpl());
   }
 
   /**

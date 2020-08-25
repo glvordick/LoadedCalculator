@@ -34,6 +34,25 @@ public class SetPrecisionCalculatorImpl implements SetPrecisionCalculator {
     this.setPrecision(p);
   }
 
+  /**
+   * Constructor to set the {@link SimpleDoubleCalculator} delegate.
+   * @param sdc The delegate given by the user.
+   */
+  public SetPrecisionCalculatorImpl(SimpleDoubleCalculator sdc) {
+    this.sDC = sdc;
+    this.precision = 5;
+  }
+
+  /**
+   * Constructor that creates an object with a given precision in range and sets the delegate.
+   * @param p the precision in number of digits after the decimal point.
+   * @param sdc The delegate given by the user.
+   */
+  public SetPrecisionCalculatorImpl(int p, SimpleDoubleCalculator sdc) {
+    this.sDC = sdc;
+    this.setPrecision(p);
+  }
+
   @Override
   public void setPrecision(int p) throws IllegalArgumentException {
     if (p < 0 || p > 10) {
