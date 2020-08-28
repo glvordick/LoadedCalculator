@@ -1,20 +1,19 @@
 import static org.junit.Assert.*;
 
+import Model.LoadedCalculator.ILoadedCalculatorModel;
 import Model.LoadedCalculator.LoadedCalculatorModel;
-import Model.LoadedCalculator.LoadedCalculatorModelImpl;
-import Model.SetPrecision.SetPrecisionCalculatorImpl;
 import org.junit.Before;
 import org.junit.Test;
 
 public class LoadedCalculatorModelImplTest {
 
-  LoadedCalculatorModel lcm1;
-  LoadedCalculatorModel lcm2;
+  ILoadedCalculatorModel lcm1;
+  ILoadedCalculatorModel lcm2;
 
   @Before
   public void setUp() {
-    lcm1 = new LoadedCalculatorModelImpl();
-    lcm2 = new LoadedCalculatorModelImpl(3);
+    lcm1 = new LoadedCalculatorModel();
+    lcm2 = new LoadedCalculatorModel(3);
   }
 
   @Test
@@ -98,10 +97,10 @@ public class LoadedCalculatorModelImplTest {
   }
 
   @Test
-  public void testComplexDivideWithRemainder() {
-    assertEquals(lcm1.complexDivideWithRemainder(73, 28, 6, 8),
+  public void testComplexRemainder() {
+    assertEquals(lcm1.complexRemainder(73, 28, 6, 8),
         "7 - 4i remainder: -1 - 4i");
-    assertEquals(lcm1.complexDivideWithRemainder(12, 41, 5, -9),
+    assertEquals(lcm1.complexRemainder(12, 41, 5, -9),
         "-3 + 3i remainder: 0 - 1i");
   }
 
@@ -121,15 +120,15 @@ public class LoadedCalculatorModelImplTest {
   @Test
   public void testGetAns() {
     lcm1.add(3, 5);
-    assertEquals(lcm1.getAns(), 8, 0.001);
-    assertEquals(lcm1.getAns(), 0, 0.001);
-    assertEquals(lcm1.getAns(), 0, 0.001);
+    assertEquals(lcm1.getAns(), "8");
+    assertEquals(lcm1.getAns(), "0");
+    assertEquals(lcm1.getAns(), "0");
     //only get 0 if you keep calling getAns
 
     lcm2.multi(3.2144, 3.32487242);
     lcm2.divide(24652, 17);
-    assertEquals(lcm2.getAns(), 1450.118, 0.000001); //line 129 operation
-    assertEquals(lcm2.getAns(), 10.687, 0.000001); //line 128 operation
+    assertEquals(lcm2.getAns(), "1450.118"); //line 129 operation
+    assertEquals(lcm2.getAns(), "10.687"); //line 128 operation
   }
 
   /**
@@ -187,12 +186,12 @@ public class LoadedCalculatorModelImplTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void testNegativePrecision() {
-    new LoadedCalculatorModelImpl(-1);
+    new LoadedCalculatorModel(-1);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testTooLargePrecision() {
-    new LoadedCalculatorModelImpl(436);
+    new LoadedCalculatorModel(436);
   }
 
   @Test(expected = IllegalArgumentException.class)

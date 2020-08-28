@@ -6,11 +6,11 @@ import Model.SimpleDouble.*;
 
 public class SimpleDoubleCalculatorImplTest {
 
-  SimpleDoubleCalculator calc;
+  ISimpleDoubleCalculator calc;
 
   @Before
   public void init() {
-    this.calc = new SimpleDoubleCalculatorImpl();
+    this.calc = new SimpleDoubleCalculator();
   }
 
   @Test

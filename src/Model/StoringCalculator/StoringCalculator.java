@@ -1,17 +1,67 @@
 package Model.StoringCalculator;
 
+import Model.SimpleDouble.ISimpleDoubleCalculator;
 import Model.SimpleDouble.SimpleDoubleCalculator;
-import Model.SimpleInt.SimpleIntCalculator;
+import java.util.Stack;
 
 /**
- * An interface that represents a calculator that stores the results of the calculations it makes.
+ * An implementation of the {@link IStoringCalculator} interface. This implementation uses a stack
+ * to hold the answers to previous calculations. Repeated calls to getAns can be used to get
+ * previous answers, but anything that is passed over will be lost.
  */
-public interface StoringCalculator extends SimpleDoubleCalculator {
+public class StoringCalculator implements IStoringCalculator {
+
+  private final Stack<String> answers;
+  private final ISimpleDoubleCalculator sDC;
 
   /**
-   * Returns the answer of the previous calculation.
-   * @return a double that was the result of a prior calculation.
+   * Default constructor.
    */
-  double getAns();
+  public StoringCalculator() {
+    this.answers = new Stack<>();
+    this.sDC = new SimpleDoubleCalculator();
+  }
 
+  /**
+   * Constructor to set the delegate.
+   *
+   * @param sdc A {@link ISimpleDoubleCalculator} delegate.
+   */
+  public StoringCalculator(ISimpleDoubleCalculator sdc) {
+    this.answers = new Stack<>();
+    this.sDC = sdc;
+  }
+
+  @Override
+  public String getAns() {
+    return this.answers.empty() ? "" : this.answers.pop();
+  }
+
+  @Override
+  public double add(double x, double y) {
+    double ans = this.sDC.add(x, y);
+    answers.push(String.valueOf(ans));
+    return ans;
+  }
+
+  @Override
+  public double sub(double x, double y) {
+    double ans = this.sDC.sub(x, y);
+    answers.push(String.valueOf(ans));
+    return ans;
+  }
+
+  @Override
+  public double multi(double x, double y) {
+    double ans = this.sDC.multi(x, y);
+    answers.push(String.valueOf(ans));
+    return ans;
+  }
+
+  @Override
+  public double divide(double x, double y) throws IllegalArgumentException {
+    double ans = this.sDC.divide(x, y);
+    answers.push(String.valueOf(ans));
+    return ans;
+  }
 }

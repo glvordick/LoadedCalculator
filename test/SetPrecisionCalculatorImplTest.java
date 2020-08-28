@@ -1,26 +1,26 @@
 import static org.junit.Assert.*;
 
+import Model.SetPrecision.ISetPrecisionCalculator;
 import Model.SetPrecision.SetPrecisionCalculator;
-import Model.SetPrecision.SetPrecisionCalculatorImpl;
+import Model.SimpleDouble.ISimpleDoubleCalculator;
 import Model.SimpleDouble.SimpleDoubleCalculator;
-import Model.SimpleDouble.SimpleDoubleCalculatorImpl;
 import org.junit.Before;
 import org.junit.Test;
 
 public class SetPrecisionCalculatorImplTest {
-  SetPrecisionCalculator spc1;
-  SetPrecisionCalculator spc2;
-  SetPrecisionCalculator spc3;
-  SetPrecisionCalculator spc4;
+  ISetPrecisionCalculator spc1;
+  ISetPrecisionCalculator spc2;
+  ISetPrecisionCalculator spc3;
+  ISetPrecisionCalculator spc4;
 
   /**
-   * Showcasing all four constructors for the {@link SetPrecisionCalculatorImpl} class.
+   * Showcasing all four constructors for the {@link SetPrecisionCalculator} class.
    */
   @Before
   public void init() {
-    spc1 = new SetPrecisionCalculatorImpl();
-    spc2 = new SetPrecisionCalculatorImpl(3);
-    spc3 =  new SetPrecisionCalculatorImpl(new SimpleDoubleCalculator() {
+    spc1 = new SetPrecisionCalculator();
+    spc2 = new SetPrecisionCalculator(3);
+    spc3 =  new SetPrecisionCalculator(new ISimpleDoubleCalculator() {
       @Override
       public double add(double x, double y) {
         return 42;
@@ -41,7 +41,7 @@ public class SetPrecisionCalculatorImplTest {
         return 42;
       }
     });
-    spc4 = new SetPrecisionCalculatorImpl( 7, new SimpleDoubleCalculatorImpl());
+    spc4 = new SetPrecisionCalculator( 7, new SimpleDoubleCalculator());
   }
 
   /**
@@ -115,12 +115,12 @@ public class SetPrecisionCalculatorImplTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void testNegativePrecision() {
-    new SetPrecisionCalculatorImpl(-1);
+    new SetPrecisionCalculator(-1);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testTooLargePrecision() {
-    new SetPrecisionCalculatorImpl(436);
+    new SetPrecisionCalculator(436);
   }
 
 }
