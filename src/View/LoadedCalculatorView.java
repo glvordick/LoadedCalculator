@@ -1,8 +1,10 @@
 package View;
 
+import Util.Utils;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Scanner;
 import java.util.function.Consumer;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -14,43 +16,53 @@ import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.border.CompoundBorder;
 
+/**
+ * This class in as implementation of the {@link ILoadedCalculatorView} interface. This view is has
+ * a graphical user interface with over 20 buttons. The GUI displays the results of calculations
+ * made by the calculator. It also contains a catalog of more complicated operations that the user
+ * can also take advantage of.
+ */
 public class LoadedCalculatorView extends JFrame implements ILoadedCalculatorView {
 
-  private JButton number8; //
-  private JButton number7; //
-  private JButton number9; //
-  private JButton addButton; //
-  private JButton number4; //
-  private JButton number1; //
-  private JButton number2; //
-  private JButton number5; //
-  private JButton number6; //
-  private JButton subtractButton; //
-  private JButton number3; //
-  private JButton multiplyButton; //
-  private JButton number0; //
-  private JButton equalsButton; //
-  private JButton divideButton; //
-  private JButton ansButton; //
-  private JButton deleteButton; //
-  private JSlider precisionSlider; //
-  private JPanel mainPanel; //
-  private JTextArea inputArea; //
-  private JComboBox<String> modeBox; //
-  private JButton decimalButton; //
-  private JButton catalogButton; //
-  private JButton commaButton; //
-  private JButton leftParenButton; //
-  private JButton rightParenButton; //
-  private JSplitPane splitPane; //
-  private JTextArea outputArea; //
+  private JButton number8;
+  private JButton number7;
+  private JButton number9;
+  private JButton addButton;
+  private JButton number4;
+  private JButton number1;
+  private JButton number2;
+  private JButton number5;
+  private JButton number6;
+  private JButton subtractButton;
+  private JButton number3;
+  private JButton multiplyButton;
+  private JButton number0;
+  private JButton equalsButton;
+  private JButton divideButton;
+  private JButton ansButton;
+  private JButton deleteButton;
+  private JSlider precisionSlider;
+  private JPanel mainPanel;
+  private JTextArea inputArea;
+  private JComboBox<String> modeBox;
+  private JButton decimalButton;
+  private JButton catalogButton;
+  private JButton clearButton;
+  private JButton leftParenButton;
+  private JButton rightParenButton;
+  private JSplitPane splitPane;
+  private JTextArea outputArea;
 
   private Consumer<String> commandCallback;
 
+  //None can be final as LoadedCalculator.form describes the layout, but they aren't added until the
+  //pack method is called.
+
   public LoadedCalculatorView() {
     super("Calculator");
+
     this.setContentPane(mainPanel);
-    this.setPreferredSize(new Dimension(500, 320));
+    this.setPreferredSize(new Dimension(525, 315));
 
     this.inputArea.setSelectedTextColor(null);
 
@@ -82,7 +94,6 @@ public class LoadedCalculatorView extends JFrame implements ILoadedCalculatorVie
     this.number7.addActionListener(new TextButtonListener());
     this.number8.addActionListener(new TextButtonListener());
     this.number9.addActionListener(new TextButtonListener());
-    this.commaButton.addActionListener(new TextButtonListener());
     this.decimalButton.addActionListener(new TextButtonListener());
     leftParenButton.addActionListener(new TextButtonListener());
     rightParenButton.addActionListener(new TextButtonListener());
@@ -92,11 +103,14 @@ public class LoadedCalculatorView extends JFrame implements ILoadedCalculatorVie
         inputArea.setText(s.substring(0, s.length() - 1));
       }
     });
+    this.clearButton.addActionListener(e ->
+        this.inputArea.setText(""));
 
-    this.ansButton.addActionListener(new ActionButtonListener());
-    this.modeBox.addActionListener(e ->
-        callbackHelper(modeBox.getItemAt(modeBox.getSelectedIndex())));
+    this.ansButton.addActionListener(e -> {
+      inputArea.append("ANS");
+    });
 
+    //This is very complicated as each option requires a different action to be taken.
     this.catalogButton.addActionListener(e -> {
       Object[] possibilities = {"GCD", "LCM", "Prime", "Exponential", "Modulo", "log", "ln",
           "LogBaseN", "Sin",
@@ -125,8 +139,8 @@ public class LoadedCalculatorView extends JFrame implements ILoadedCalculatorVie
               "");
           String str = "GCD(" + params + ")";
           outputArea.setText(str);
-          outputArea.append(" ".repeat(40-str.length()));
-          callbackHelper("gcd " + params);
+          outputArea.append(" ".repeat(25 - str.length()));
+          callbackHelper("gcd " + Utils.removeAllChar(params, ' '));
           break;
         }
         case "LCM": {
@@ -140,8 +154,8 @@ public class LoadedCalculatorView extends JFrame implements ILoadedCalculatorVie
               "");
           String str = "LCM(" + params + ")";
           outputArea.setText(str);
-          outputArea.append(" ".repeat(40-str.length()));
-          callbackHelper("lcm " + params);
+          outputArea.append(" ".repeat(25 - str.length()));
+          callbackHelper("lcm " + Utils.removeAllChar(params, ' '));
           break;
         }
         case "Prime": {
@@ -155,14 +169,15 @@ public class LoadedCalculatorView extends JFrame implements ILoadedCalculatorVie
               "");
           String str = "Prime(" + params + ")";
           outputArea.setText(str);
-          outputArea.append(" ".repeat(40-str.length()));
-          callbackHelper("prime " + params);
+          outputArea.append(" ".repeat(25 - str.length()));
+          callbackHelper("prime " + Utils.removeAllChar(params, ' '));
           break;
         }
         case "Exponential": {
           String params = (String) JOptionPane.showInputDialog(
               this,
-              "Please enter two positive integers separated by a comma: (ex. 7,12)",
+              "Please enter two non-negative integers separated by a comma: (ex. 2,3) \n"
+                  + "Entering 2,3 would return 2^3.",
               "Exponential",
               JOptionPane.PLAIN_MESSAGE,
               null,
@@ -170,14 +185,15 @@ public class LoadedCalculatorView extends JFrame implements ILoadedCalculatorVie
               "");
           String str = "Exp(" + params + ")";
           outputArea.setText(str);
-          outputArea.append(" ".repeat(40-str.length()));
-          callbackHelper("exp " + params);
+          outputArea.append(" ".repeat(25 - str.length()));
+          callbackHelper("exp " + Utils.removeAllChar(params, ' '));
           break;
         }
         case "Modulo": {
           String params = (String) JOptionPane.showInputDialog(
               this,
-              "Please enter two positive integers separated by a comma: (ex. 7,12)",
+              "Please enter two integers separated by a comma: (ex. 15,4)\n"
+                  + "Entering 15,4 would return 15 mod 4.",
               "Mod",
               JOptionPane.PLAIN_MESSAGE,
               null,
@@ -185,14 +201,15 @@ public class LoadedCalculatorView extends JFrame implements ILoadedCalculatorVie
               "");
           String str = "Mod(" + params + ")";
           outputArea.setText(str);
-          outputArea.append(" ".repeat(40-str.length()));
-          callbackHelper("mod " + params);
+          outputArea.append(" ".repeat(25 - str.length()));
+          callbackHelper("mod " + Utils.removeAllChar(params, ' '));
           break;
         }
         case "LogBaseN": {
           String params = (String) JOptionPane.showInputDialog(
               this,
-              "Please enter two positive integers separated by a comma: (ex. 7,12)",
+              "Please enter two positive integers separated by a comma: (ex. 2,8) \n"
+                  + "Entering 2,8 would return log2(8) or log base 2 of 8.",
               "Log Base N",
               JOptionPane.PLAIN_MESSAGE,
               null,
@@ -200,14 +217,15 @@ public class LoadedCalculatorView extends JFrame implements ILoadedCalculatorVie
               "");
           String str = "LogBaseN(" + params + ")";
           outputArea.setText(str);
-          outputArea.append(" ".repeat(40-str.length()));
-          callbackHelper("logBaseN " + params);
+          outputArea.append(" ".repeat(25 - str.length()));
+          callbackHelper("logBaseN " + Utils.removeAllChar(params, ' '));
           break;
         }
         case "log": {
           String params = (String) JOptionPane.showInputDialog(
               this,
-              "Please enter a positive integer: ",
+              "Please enter a positive integer: \n"
+                  + "Returns the base 10 log.",
               "Log Base 10",
               JOptionPane.PLAIN_MESSAGE,
               null,
@@ -215,14 +233,15 @@ public class LoadedCalculatorView extends JFrame implements ILoadedCalculatorVie
               "");
           String str = "log(" + params + ")";
           outputArea.setText(str);
-          outputArea.append(" ".repeat(40-str.length()));
-          callbackHelper("log " + params);
+          outputArea.append(" ".repeat(25 - str.length()));
+          callbackHelper("log " + Utils.removeAllChar(params, ' '));
           break;
         }
         case "ln": {
           String params = (String) JOptionPane.showInputDialog(
               this,
-              "Please enter a positive integer: ",
+              "Please enter a positive integer: "
+                  + "\nReturns the natural log of the give number.",
               "Natural Log",
               JOptionPane.PLAIN_MESSAGE,
               null,
@@ -230,12 +249,12 @@ public class LoadedCalculatorView extends JFrame implements ILoadedCalculatorVie
               "");
           String str = "ln(" + params + ")";
           outputArea.setText(str);
-          outputArea.append(" ".repeat(40-str.length()));
-          callbackHelper("ln " + params);
+          outputArea.append(" ".repeat(25 - str.length()));
+          callbackHelper("ln " + Utils.removeAllChar(params, ' '));
           break;
         }
         case "Sin": {
-          String mode = modeBox.getItemAt(modeBox.getSelectedIndex());
+          String mode = modeBox.getItemAt(modeBox.getSelectedIndex()).substring(0,3);;
           String params = (String) JOptionPane.showInputDialog(
               this,
               "Please enter a value in " + mode + ": ",
@@ -246,12 +265,12 @@ public class LoadedCalculatorView extends JFrame implements ILoadedCalculatorVie
               "");
           String str = "sin(" + params + ")";
           outputArea.setText(str);
-          outputArea.append(" ".repeat(40-str.length()));
-          callbackHelper("sin " + params + " " + mode);
+          outputArea.append(" ".repeat(25 - str.length()));
+          callbackHelper("sin " + Utils.removeAllChar(params, ' ') + " " + mode);
           break;
         }
         case "Cos": {
-          String mode = modeBox.getItemAt(modeBox.getSelectedIndex());
+          String mode = modeBox.getItemAt(modeBox.getSelectedIndex()).substring(0,3);
           String params = (String) JOptionPane.showInputDialog(
               this,
               "Please enter a value in " + mode + ": ",
@@ -262,12 +281,12 @@ public class LoadedCalculatorView extends JFrame implements ILoadedCalculatorVie
               "");
           String str = "cos(" + params + ")";
           outputArea.setText(str);
-          outputArea.append(" ".repeat(40-str.length()));
-          callbackHelper("cos " + params + " " + mode);
+          outputArea.append(" ".repeat(25 - str.length()));
+          callbackHelper("cos " + Utils.removeAllChar(params, ' ') + " " + mode);
           break;
         }
         case "Tan": {
-          String mode = modeBox.getItemAt(modeBox.getSelectedIndex());
+          String mode = modeBox.getItemAt(modeBox.getSelectedIndex()).substring(0,3);
           String params = (String) JOptionPane.showInputDialog(
               this,
               "Please enter a value in " + mode + ": ",
@@ -278,8 +297,8 @@ public class LoadedCalculatorView extends JFrame implements ILoadedCalculatorVie
               "");
           String str = "tan(" + params + ")";
           outputArea.setText(str);
-          outputArea.append(" ".repeat(40-str.length()));
-          callbackHelper("tan " + params + " " + mode);
+          outputArea.append(" ".repeat(25 - str.length()));
+          callbackHelper("tan " + Utils.removeAllChar(params, ' ') + " " + mode);
           break;
         }
         case "complexAdd": {
@@ -293,8 +312,8 @@ public class LoadedCalculatorView extends JFrame implements ILoadedCalculatorVie
               "");
           String str = "cAdd(" + params + ")";
           outputArea.setText(str);
-          outputArea.append(" ".repeat(40-str.length()));
-          callbackHelper("cAdd " + params);
+          outputArea.append(" ".repeat(25 - str.length()));
+          callbackHelper("cAdd " + Utils.removeAllChar(params, ' '));
           break;
         }
         case "complexSubtract": {
@@ -308,8 +327,8 @@ public class LoadedCalculatorView extends JFrame implements ILoadedCalculatorVie
               "");
           String str = "cSub(" + params + ")";
           outputArea.setText(str);
-          outputArea.append(" ".repeat(40-str.length()));
-          callbackHelper("cSub " + params);
+          outputArea.append(" ".repeat(25 - str.length()));
+          callbackHelper("cSub " + Utils.removeAllChar(params, ' '));
           break;
         }
         case "complexMultiply": {
@@ -323,8 +342,8 @@ public class LoadedCalculatorView extends JFrame implements ILoadedCalculatorVie
               "");
           String str = "cMultiply(" + params + ")";
           outputArea.setText(str);
-          outputArea.append(" ".repeat(40-str.length()));
-          callbackHelper("cMultiply " + params);
+          outputArea.append(" ".repeat(25 - str.length()));
+          callbackHelper("cMultiply " + Utils.removeAllChar(params, ' '));
           break;
         }
         case "complexDivide": {
@@ -338,8 +357,8 @@ public class LoadedCalculatorView extends JFrame implements ILoadedCalculatorVie
               "");
           String str = "cDivide(" + params + ")";
           outputArea.setText(str);
-          outputArea.append(" ".repeat(40-str.length()));
-          callbackHelper("cDivide " + params);
+          outputArea.append(" ".repeat(25 - str.length()));
+          callbackHelper("cDivide " + Utils.removeAllChar(params, ' '));
           break;
         }
         case "complexRemainder": {
@@ -353,8 +372,8 @@ public class LoadedCalculatorView extends JFrame implements ILoadedCalculatorVie
               "");
           String str = "cRemainder(" + params + ")";
           outputArea.setText(str);
-          outputArea.append(" ".repeat(40-str.length()));
-          callbackHelper("cRemainder " + params);
+          outputArea.append(" ".repeat(25 - str.length()));
+          callbackHelper("cRemainder " + Utils.removeAllChar(params, ' '));
           break;
         }
         case "complexNorm": {
@@ -368,8 +387,8 @@ public class LoadedCalculatorView extends JFrame implements ILoadedCalculatorVie
               "");
           String str = "cNorm(" + params + ")";
           outputArea.setText(str);
-          outputArea.append(" ".repeat(40-str.length()));
-          callbackHelper("cNorm " + params);
+          outputArea.append(" ".repeat(25 - str.length()));
+          callbackHelper("cNorm " + Utils.removeAllChar(params, ' '));
           break;
         }
         case "Exit": {
@@ -388,13 +407,12 @@ public class LoadedCalculatorView extends JFrame implements ILoadedCalculatorVie
       String equation = inputArea.getText();
       inputArea.setText("");
       outputArea.setText(equation);
-      outputArea.append(" ".repeat(40 - equation.length()));
+      outputArea.append(" ".repeat(25 - equation.length()));
       callbackHelper("equal " + equation);
     });
 
-    this.precisionSlider.addChangeListener(l -> {
-      callbackHelper("precision " + precisionSlider.getValue());
-    });
+    this.precisionSlider.addChangeListener(l ->
+        callbackHelper("precision " + precisionSlider.getValue()));
 
     this.pack();
     this.setVisible(true);
@@ -402,6 +420,8 @@ public class LoadedCalculatorView extends JFrame implements ILoadedCalculatorVie
     splitPane.setDividerLocation(splitPane.getWidth() / 2);
     splitPane.setBorder(new CompoundBorder());
 
+    System.out.println(this.inputArea.getSize());
+    System.out.println(this.outputArea.getSize());
   }
 
   @Override
@@ -423,13 +443,26 @@ public class LoadedCalculatorView extends JFrame implements ILoadedCalculatorVie
 
   @Override
   public void acceptResult(String result) {
-    String a = " ".repeat(40 - result.length());
+    if (result.contains("precision")) {
+      Scanner s = new Scanner(result);
+      s.next();
+      int p = s.nextInt();
+      this.precisionSlider.setValue(p);
+      return;
+    }
+    if (result.endsWith(".0")) {
+      result = result.substring(0, result.length() - 2);
+    }
+    String a = " ".repeat(25 - result.length());
     outputArea.append(a);
     outputArea.append(result);
   }
 
   @Override
   public void acceptAnswer(String answer) {
+    if (answer.endsWith(".0")) {
+      answer = answer.substring(0, answer.length() - 2);
+    }
     inputArea.append(answer);
   }
 
@@ -441,18 +474,9 @@ public class LoadedCalculatorView extends JFrame implements ILoadedCalculatorVie
     }
   }
 
-  class ActionButtonListener implements ActionListener {
-
-    @Override
-    public void actionPerformed(ActionEvent actionEvent) {
-      callbackHelper(actionEvent.getActionCommand());
-    }
-  }
-
   private void callbackHelper(String cmd) {
     if (this.commandCallback != null) {
       commandCallback.accept(cmd);
     }
   }
 }
-

@@ -20,15 +20,15 @@ public class StoringCalculatorImplTest {
   @Test
   public void testGetAns() {
     sc1.add(3, 5);
-    assertEquals(sc1.getAns(), "8");
-    assertEquals(sc1.getAns(), "0");
-    assertEquals(sc1.getAns(), "0");
+    assertEquals(sc1.getAns(), 8, 0.001);
+    assertEquals(sc1.getAns(), 0, 0.001);
+    assertEquals(sc1.getAns(), 0, 0.001);
     //only get 0 if you keep calling getAns
 
     sc2.multi(3.2144, 3.32487242);
     sc2.divide(24652, 17);
-    assertEquals(sc2.getAns(), "1450.11765"); //line 29 operation
-    assertEquals(sc2.getAns(), "10.68747"); //line 28 operation
+    assertEquals(sc2.getAns(), 1450.11765, 0.001); //line 29 operation
+    assertEquals(sc2.getAns(), 10.68747, 0.001); //line 28 operation
   }
 
   /**

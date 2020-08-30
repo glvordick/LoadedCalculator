@@ -74,34 +74,37 @@ public class LoadedCalculatorModelImplTest {
 
   @Test
   public void testComplexAdd() {
-    assertEquals(lcm1.complexAdd(3,4,1,2), "4 + 6i");
-    assertEquals(lcm1.complexAdd(3,-4,4,2), "7 - 2i");
+    assertEquals(lcm1.complexAdd(3,4,1,2), "4+6i");
+    assertEquals(lcm1.complexAdd(3,-4,4,2), "7-2i");
+    assertEquals(lcm1.complexAdd(3,4,2,-1), "5+3i");
   }
 
   @Test
   public void testComplexSub() {
-    assertEquals(lcm1.complexSub(3,4,1,2), "2 + 2i");
-    assertEquals(lcm1.complexSub(3,-4,4,2), "-1 - 6i");
+    assertEquals(lcm1.complexSub(3,4,1,2), "2+2i");
+    assertEquals(lcm1.complexSub(3,-4,4,2), "-1-6i");
   }
 
   @Test
   public void testComplexMulti() {
-    assertEquals(lcm1.complexMulti(3,4,1,2), "-5 + 10i");
-    assertEquals(lcm1.complexMulti(3,-4,4,2), "20 - 10i");
+    assertEquals(lcm1.complexMulti(3,4,1,2), "-5+10i");
+    assertEquals(lcm1.complexMulti(3,-4,4,2), "20-10i");
   }
 
   @Test
   public void testComplexDivide() {
-    assertEquals(lcm1.complexDivide(73, 28, 6, 8), "7 - 4i");
-    assertEquals(lcm1.complexDivide(12, 41, 5, -9), "-3 + 3i");
+    assertEquals(lcm1.complexDivide(73, 28, 6, 8), "7-4i");
+    assertEquals(lcm1.complexDivide(12, 41, 5, -9), "-3+3i");
   }
 
   @Test
   public void testComplexRemainder() {
     assertEquals(lcm1.complexRemainder(73, 28, 6, 8),
-        "7 - 4i remainder: -1 - 4i");
-    assertEquals(lcm1.complexRemainder(12, 41, 5, -9),
-        "-3 + 3i remainder: 0 - 1i");
+        "7-4i remainder: -1-4i");
+
+    assertEquals(
+        lcm1.complexRemainder(12, 41, 5, -9),
+        "-3+3i remainder: 0-1i");
   }
 
 
@@ -118,17 +121,25 @@ public class LoadedCalculatorModelImplTest {
   }
 
   @Test
+  public void testGetPrecision() {
+    assertEquals(lcm1.getPrecision(), 5);
+    assertEquals(lcm2.getPrecision(), 3);
+  }
+
+  @Test
   public void testGetAns() {
     lcm1.add(3, 5);
-    assertEquals(lcm1.getAns(), "8");
-    assertEquals(lcm1.getAns(), "0");
-    assertEquals(lcm1.getAns(), "0");
+    lcm1.sub(15,3);
+    assertEquals(lcm1.getAns(), 12, 0.001);
+    lcm1.setPrecision(9);
+    assertEquals(lcm1.getAns(), 8, 0.001);
+    assertEquals(lcm1.getAns(), 0, 0.001);
     //only get 0 if you keep calling getAns
 
     lcm2.multi(3.2144, 3.32487242);
     lcm2.divide(24652, 17);
-    assertEquals(lcm2.getAns(), "1450.118"); //line 129 operation
-    assertEquals(lcm2.getAns(), "10.687"); //line 128 operation
+    assertEquals(lcm2.getAns(), 1450.118, 0.0001); //line 129 operation
+    assertEquals(lcm2.getAns(), 10.687,0.0001); //line 128 operation
   }
 
   /**

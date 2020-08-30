@@ -9,34 +9,51 @@ import java.util.Objects;
 import java.util.Scanner;
 import java.util.function.Consumer;
 
+/**
+ * An implementation of the {@link IController} interface. This implementation is for a calculator
+ * that has a view and model that need to be communicated with. This class implements the Consumer
+ * interface in order to receive information from the view and act on it. This, in essence, makes
+ * this class a listener for the View.
+ */
 public class LoadedCalculatorController implements IController, Consumer<String> {
 
   private final ILoadedCalculatorView view;
   private final ILoadedCalculatorModel model;
 
+  /**
+   * Default constructor for the class.
+   *
+   * @param view  a {@link ILoadedCalculatorView} object that the controller will listen to.
+   * @param model a {@link ILoadedCalculatorModel} object that the controller will talk to.
+   */
   public LoadedCalculatorController(ILoadedCalculatorView view,
       ILoadedCalculatorModel model) {
     this.view = Objects.requireNonNull(view);
     this.model = Objects.requireNonNull(model);
+    this.accept("precision " + model.getPrecision());
   }
+
   @Override
   public void processCommand(String s, String args) {
     Map<String, Runnable> commands = new SupportedOperations().getOperations(args);
+    System.out.println(args);
 
     Runnable command = commands.get(s); // we get an empty runnable if no command found
 
-
+    //command.run();
     try {
       command.run();
-    } catch (RuntimeException e) { //because it could return one of many runtime exceptions, of
-      //which we would simply like to relay that message to the user.
+    } catch (RuntimeException e) { // because it could return one of many runtime exceptions, of
+      // which we would simply like to relay that message to the user.
       view.showErrorMessage(e.getMessage());
+      view.acceptResult("ERROR");
     }
   }
 
+
   @Override
   public void run() {
-    view.setCommandCallback(this);
+    view.setCommandCallback(this); //Sets this object as the listener for the view.
     view.run();
   }
 
@@ -48,11 +65,23 @@ public class LoadedCalculatorController implements IController, Consumer<String>
 
     StringBuilder args = new StringBuilder();
 
+    boolean b = false;
     while (scan.hasNext()) {
-      args.append(scan.next());
+      b = true;
+      args.append(scan.next().toLowerCase()).append(" ");
     }
 
-    processCommand(cmd, args.toString());
+    if (b) {
+      args.delete(args.length() - 1, args.length()); // removes trailing space
+    }
+
+    String params = args.toString()
+        .replace("pi", String.valueOf(Math.PI))
+        .replace("e", String.valueOf(Math.E));
+    if (params.contains("ans")) {
+      params = params.replace("ans", String.valueOf(this.model.getAns()));
+    }
+    processCommand(cmd, params);
   }
 
 
@@ -63,13 +92,15 @@ public class LoadedCalculatorController implements IController, Consumer<String>
     public Map<String, Runnable> getOperations(String args) {
       Map<String, Runnable> commands = new HashMap<>();
 
+      //Every command is surrounded with a try catch to help give more specific error codes
+
       commands.put("gcd", () -> {
         try {
           int a = Integer.parseInt(args.substring(0, args.indexOf(",")));
           int b = Integer.parseInt(args.substring(args.indexOf(",") + 1));
           int ans = model.gcd(a, b);
           view.acceptResult(String.valueOf(ans));
-        } catch(StringIndexOutOfBoundsException e) {
+        } catch (StringIndexOutOfBoundsException e) {
           throw new IllegalArgumentException("Invalid arguments given!");
         }
       });
@@ -77,9 +108,9 @@ public class LoadedCalculatorController implements IController, Consumer<String>
         try {
           int a = Integer.parseInt(args.substring(0, args.indexOf(",")));
           int b = Integer.parseInt(args.substring(args.indexOf(",") + 1));
-          int ans = model.lcm(a, b);
+          long ans = model.lcm(a, b);
           view.acceptResult(String.valueOf(ans));
-        } catch(StringIndexOutOfBoundsException e) {
+        } catch (StringIndexOutOfBoundsException e) {
           throw new IllegalArgumentException("Invalid arguments given!");
         }
       });
@@ -88,7 +119,7 @@ public class LoadedCalculatorController implements IController, Consumer<String>
           int a = Integer.parseInt(args);
           boolean ans = model.prime(a);
           view.acceptResult(String.valueOf(ans));
-        } catch(StringIndexOutOfBoundsException e) {
+        } catch (StringIndexOutOfBoundsException e) {
           throw new IllegalArgumentException("Invalid argument given!");
         }
       });
@@ -98,75 +129,75 @@ public class LoadedCalculatorController implements IController, Consumer<String>
           int b = Integer.parseInt(args.substring(args.indexOf(",") + 1));
           int ans = model.mod(a, b);
           view.acceptResult(String.valueOf(ans));
-        } catch(StringIndexOutOfBoundsException e) {
+        } catch (StringIndexOutOfBoundsException e) {
           throw new IllegalArgumentException("Invalid arguments given!");
         }
       });
       commands.put("exp", () -> {
         try {
-          double a = Double.parseDouble(args.substring(0, args.indexOf(",")));
-          double b = Double.parseDouble(args.substring(args.indexOf(",") + 1));
+          double a = Utils.equationSolver(args.substring(0, args.indexOf(",")), model);
+          double b = Utils.equationSolver(args.substring(args.indexOf(",") + 1), model);
           double ans = model.exp(a, b);
           view.acceptResult(String.valueOf(ans));
-        } catch(StringIndexOutOfBoundsException e) {
+        } catch (StringIndexOutOfBoundsException e) {
           throw new IllegalArgumentException("Invalid arguments given!");
         }
       });
       commands.put("log", () -> {
         try {
-          double a = Double.parseDouble(args);
+          double a = Utils.equationSolver(args, model);
           double ans = model.log(a);
           view.acceptResult(String.valueOf(ans));
-        } catch(StringIndexOutOfBoundsException e) {
+        } catch (StringIndexOutOfBoundsException e) {
           throw new IllegalArgumentException("Invalid arguments given!");
         }
       });
       commands.put("ln", () -> {
         try {
-          double a = Double.parseDouble(args);
+          double a = Utils.equationSolver(args, model);
           double ans = model.ln(a);
           view.acceptResult(String.valueOf(ans));
-        } catch(StringIndexOutOfBoundsException e) {
+        } catch (StringIndexOutOfBoundsException e) {
           throw new IllegalArgumentException("Invalid arguments given!");
         }
       });
       commands.put("logBaseN", () -> {
         try {
-          double a = Double.parseDouble(args.substring(0, args.indexOf(",")));
-          double b = Double.parseDouble(args.substring(args.indexOf(",") + 1));
+          double a = Utils.equationSolver(args.substring(0, args.indexOf(",")), model);
+          double b = Utils.equationSolver(args.substring(args.indexOf(",") + 1), model);
           double ans = model.logBaseN(a, b);
           view.acceptResult(String.valueOf(ans));
-        } catch(StringIndexOutOfBoundsException e) {
+        } catch (StringIndexOutOfBoundsException e) {
           throw new IllegalArgumentException("Invalid arguments given!");
         }
       });
       commands.put("sin", () -> {
         try {
-          double a = Double.parseDouble(args.substring(0, args.indexOf(",")));
-          boolean b = args.substring(args.indexOf(",") + 1).equals("Radians");
+          double a = Utils.equationSolver(args.substring(0, args.indexOf(" ")), model);
+          boolean b = args.toLowerCase().contains("rad");
           double ans = model.sin(a, b);
           view.acceptResult(String.valueOf(ans));
-        } catch(StringIndexOutOfBoundsException e) {
+        } catch (StringIndexOutOfBoundsException e) {
           throw new IllegalArgumentException("Invalid arguments given!");
         }
       });
       commands.put("cos", () -> {
         try {
-          double a = Double.parseDouble(args.substring(0, args.indexOf(",")));
-          boolean b = args.substring(args.indexOf(",") + 1).equals("Radians");
+          double a = Utils.equationSolver(args.substring(0, args.indexOf(" ")), model);
+          boolean b = args.toLowerCase().contains("rad");
           double ans = model.cos(a, b);
           view.acceptResult(String.valueOf(ans));
-        } catch(StringIndexOutOfBoundsException e) {
+        } catch (StringIndexOutOfBoundsException e) {
           throw new IllegalArgumentException("Invalid arguments given!");
         }
       });
       commands.put("tan", () -> {
         try {
-          double a = Double.parseDouble(args.substring(0, args.indexOf(",")));
-          boolean b = args.substring(args.indexOf(",") + 1).equals("Radians");
+          double a = Utils.equationSolver(args.substring(0, args.indexOf(" ")), model);
+          boolean b = args.toLowerCase().contains("rad");
           double ans = model.tan(a, b);
           view.acceptResult(String.valueOf(ans));
-        } catch(StringIndexOutOfBoundsException e) {
+        } catch (StringIndexOutOfBoundsException e) {
           throw new IllegalArgumentException("Invalid arguments given!");
         }
       });
@@ -178,11 +209,11 @@ public class LoadedCalculatorController implements IController, Consumer<String>
           int[] complex2 = Utils.complexFromString(b);
           String ans = model.complexAdd(complex1[0], complex1[1], complex2[0], complex2[1]);
           view.acceptResult(ans);
-        } catch(StringIndexOutOfBoundsException e) {
+        } catch (StringIndexOutOfBoundsException e) {
           throw new IllegalArgumentException("Invalid arguments given!");
         }
       });
-      commands.put("cSubtract", () -> {
+      commands.put("cSub", () -> {
         try {
           String a = args.substring(0, args.indexOf(","));
           String b = args.substring(args.indexOf(",") + 1);
@@ -190,7 +221,7 @@ public class LoadedCalculatorController implements IController, Consumer<String>
           int[] complex2 = Utils.complexFromString(b);
           String ans = model.complexSub(complex1[0], complex1[1], complex2[0], complex2[1]);
           view.acceptResult(ans);
-        } catch(StringIndexOutOfBoundsException e) {
+        } catch (StringIndexOutOfBoundsException e) {
           throw new IllegalArgumentException("Invalid arguments given!");
         }
       });
@@ -202,7 +233,7 @@ public class LoadedCalculatorController implements IController, Consumer<String>
           int[] complex2 = Utils.complexFromString(b);
           String ans = model.complexMulti(complex1[0], complex1[1], complex2[0], complex2[1]);
           view.acceptResult(ans);
-        } catch(StringIndexOutOfBoundsException e) {
+        } catch (StringIndexOutOfBoundsException e) {
           throw new IllegalArgumentException("Invalid arguments given!");
         }
       });
@@ -214,7 +245,7 @@ public class LoadedCalculatorController implements IController, Consumer<String>
           int[] complex2 = Utils.complexFromString(b);
           String ans = model.complexDivide(complex1[0], complex1[1], complex2[0], complex2[1]);
           view.acceptResult(ans);
-        } catch(StringIndexOutOfBoundsException e) {
+        } catch (StringIndexOutOfBoundsException e) {
           throw new IllegalArgumentException("Invalid arguments given!");
         }
       });
@@ -226,45 +257,41 @@ public class LoadedCalculatorController implements IController, Consumer<String>
           int[] complex2 = Utils.complexFromString(b);
           String ans = model.complexRemainder(complex1[0], complex1[1], complex2[0], complex2[1]);
           view.acceptResult(ans);
-        } catch(StringIndexOutOfBoundsException e) {
+        } catch (StringIndexOutOfBoundsException e) {
           throw new IllegalArgumentException("Invalid arguments given!");
         }
       });
       commands.put("cNorm", () -> {
         try {
           int[] complex1 = Utils.complexFromString(args);
-          int ans = model.complexNorm(complex1[0], complex1[1]);
+          double ans = model.complexNorm(complex1[0], complex1[1]);
           view.acceptResult(String.valueOf(ans));
-        } catch(StringIndexOutOfBoundsException e) {
+        } catch (StringIndexOutOfBoundsException e) {
           throw new IllegalArgumentException("Invalid arguments given!");
         }
       });
       commands.put("precision", () -> {
         try {
-        int p = Integer.parseInt(args);
-        model.setPrecision(p);
-        } catch(StringIndexOutOfBoundsException e) {
+          int p = Integer.parseInt(args);
+          model.setPrecision(p);
+          view.acceptResult("precision " + p);
+        } catch (StringIndexOutOfBoundsException e) {
           throw new IllegalArgumentException("Invalid arguments given!");
         }
       });
       commands.put("getAns", () -> {
         try {
-          String ans = model.getAns();
+          String ans = String.valueOf(model.getAns());
           view.acceptAnswer(ans);
-        } catch(StringIndexOutOfBoundsException e) {
+        } catch (StringIndexOutOfBoundsException e) {
           throw new IllegalArgumentException("Invalid arguments given!");
         }
       });
       commands.put("equal", () -> {
         try {
           double ans = Utils.equationSolver(args, model);
-          String answer = String.valueOf(ans);
-          if (answer.endsWith(".0")) {
-            view.acceptResult(answer.substring(0, answer.length() - 2));
-          } else {
-            view.acceptResult(answer);
-          }
-        } catch(StringIndexOutOfBoundsException e) {
+          view.acceptResult(String.valueOf(ans));
+        } catch (StringIndexOutOfBoundsException e) {
           throw new IllegalArgumentException("Invalid arguments given!");
         }
       });

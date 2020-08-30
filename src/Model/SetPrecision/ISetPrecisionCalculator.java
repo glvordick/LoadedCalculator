@@ -18,4 +18,19 @@ public interface ISetPrecisionCalculator extends ISimpleDoubleCalculator {
    */
   void setPrecision(int p) throws IllegalArgumentException;
 
+  /**
+   * Gets the current precision of the calculator.
+   *
+   * @return the precision of the calculator at this moment in time.
+   */
+  int getPrecision();
+
+  /**
+   * Rounds the given number to the precision that this object is set to.
+   *
+   * @param d the number to be rounded.
+   * @return the rounded number.
+   */
+  double round(double d);
+
 }

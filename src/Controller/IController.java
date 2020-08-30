@@ -18,7 +18,7 @@ public interface IController {
    * </p>
    *
    * @param s    the name of the command.
-   * @param args the arguments.
+   * @param args the arguments contained in a string.
    */
   void processCommand(String s, String args);
 

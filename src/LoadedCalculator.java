@@ -9,5 +9,8 @@ public class LoadedCalculator {
     IController controller = new LoadedCalculatorController(new LoadedCalculatorView(),
         new LoadedCalculatorModel());
     controller.run();
+
+    //System.out.println(Utils.complexFromString("4")[0] + " " + Utils.complexFromString("4")[1]);
+
   }
 }

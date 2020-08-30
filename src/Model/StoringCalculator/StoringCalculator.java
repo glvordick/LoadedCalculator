@@ -11,7 +11,7 @@ import java.util.Stack;
  */
 public class StoringCalculator implements IStoringCalculator {
 
-  private final Stack<String> answers;
+  private final Stack<Double> answers;
   private final ISimpleDoubleCalculator sDC;
 
   /**
@@ -33,35 +33,35 @@ public class StoringCalculator implements IStoringCalculator {
   }
 
   @Override
-  public String getAns() {
-    return this.answers.empty() ? "" : this.answers.pop();
+  public double getAns() {
+    return this.answers.empty() ? 0.0 : this.answers.pop();
   }
 
   @Override
   public double add(double x, double y) {
     double ans = this.sDC.add(x, y);
-    answers.push(String.valueOf(ans));
+    answers.push(ans);
     return ans;
   }
 
   @Override
   public double sub(double x, double y) {
     double ans = this.sDC.sub(x, y);
-    answers.push(String.valueOf(ans));
+    answers.push(ans);
     return ans;
   }
 
   @Override
   public double multi(double x, double y) {
     double ans = this.sDC.multi(x, y);
-    answers.push(String.valueOf(ans));
+    answers.push(ans);
     return ans;
   }
 
   @Override
   public double divide(double x, double y) throws IllegalArgumentException {
     double ans = this.sDC.divide(x, y);
-    answers.push(String.valueOf(ans));
+    answers.push(ans);
     return ans;
   }
 }

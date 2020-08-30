@@ -2,6 +2,10 @@ package View;
 
 import java.util.function.Consumer;
 
+/**
+ * This interface represents the view of a LoadedCalculator. The view is able to be run and accept
+ * user input. It also has the capability to show error messages.
+ */
 public interface ILoadedCalculatorView {
 
   /**

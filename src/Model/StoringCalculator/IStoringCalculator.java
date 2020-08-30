@@ -12,6 +12,6 @@ public interface IStoringCalculator extends ISimpleDoubleCalculator {
    *
    * @return a string that was the result of a prior calculation.
    */
-  String getAns();
+  double getAns();
 
 }

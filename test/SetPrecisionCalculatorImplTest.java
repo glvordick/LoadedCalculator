@@ -60,6 +60,12 @@ public class SetPrecisionCalculatorImplTest {
 
   }
 
+  @Test
+  public void testGetPrecision() {
+    assertEquals(spc1.getPrecision(), 5);
+    assertEquals(spc4.getPrecision(), 7);
+  }
+
   /**
    * Tests for the add method.
    */

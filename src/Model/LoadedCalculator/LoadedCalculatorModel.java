@@ -5,17 +5,29 @@ import Model.SetPrecision.SetPrecisionCalculator;
 import Util.Utils;
 import java.util.Stack;
 
+/**
+ * An implementation of the {@link ILoadedCalculatorModel} interface. This class uses a {@link
+ * ISetPrecisionCalculator} delegate so all calculations have the precision set by the user. This
+ * implementation also uses a stack to store the answers of prior calculations.
+ */
 public class LoadedCalculatorModel implements ILoadedCalculatorModel {
 
-
-  private final Stack<String> answers;
+  private final Stack<Double> answers;
   private final ISetPrecisionCalculator calc;
 
+  /**
+   * The default constructor for this class.
+   */
   public LoadedCalculatorModel() {
     this.answers = new Stack<>();
     this.calc = new SetPrecisionCalculator();
   }
 
+  /**
+   * This constructor allows the precision to start at a different value.
+   *
+   * @param precision The initial precision.
+   */
   public LoadedCalculatorModel(int precision) {
     this.answers = new Stack<>();
     this.calc = new SetPrecisionCalculator(precision);
@@ -27,10 +39,11 @@ public class LoadedCalculatorModel implements ILoadedCalculatorModel {
       throw new IllegalArgumentException("a and b must be greater than 0.");
     }
     int ans = gcdHelp(a, b);
-    answers.push(String.valueOf(ans));
+    answers.push(ans + 0.0);
     return ans;
   }
 
+  //The recursive part of the gcd method. The first method is a wrapper.
   private int gcdHelp(int a, int b) {
     if (b == 0) {
       return a;
@@ -39,12 +52,12 @@ public class LoadedCalculatorModel implements ILoadedCalculatorModel {
   }
 
   @Override
-  public int lcm(int a, int b) {
+  public long lcm(int a, int b) {
     if (a < 1 || b < 1) {
       throw new IllegalArgumentException("a and b must be greater than 0.");
     }
-    int ans = a * b / this.gcd(a, b);
-    answers.push(String.valueOf(ans));
+    long ans = a * b / this.gcd(a, b);
+    answers.push(ans + 0.0);
     return ans;
   }
 
@@ -69,76 +82,95 @@ public class LoadedCalculatorModel implements ILoadedCalculatorModel {
   @Override
   public int mod(int a, int b) {
     int ans = a % b;
-    answers.push(String.valueOf(ans));
+    answers.push(ans + 0.0);
     return ans;
   }
 
   @Override
   public double exp(double a, double b) {
-    double ans = Math.pow(a, b);
-    answers.push(String.valueOf(ans));
+    double ans = this.round(Math.pow(a, b));
+    answers.push(ans);
     return ans;
   }
 
   @Override
   public double log(double a) {
-    return Math.log10(a);
+    if (a <= 0) {
+      throw new IllegalArgumentException("a must be positive!");
+    }
+    double ans = this.round(Math.log10(a));
+    answers.push(ans);
+    return ans;
+
   }
 
   @Override
   public double ln(double a) {
-    return Math.log(a);
+    if (a <= 0) {
+      throw new IllegalArgumentException("a must be positive!");
+    }
+    double ans = this.round(Math.log(a));
+    answers.push(ans);
+    return ans;
   }
 
   @Override
   public double logBaseN(double n, double a) {
-    double ans = this.divide(Math.log(a), Math.log(n));
-    answers.push(String.valueOf(ans));
+    if (a <= 0 || n <= 0) {
+      throw new IllegalArgumentException("a and n must both be positive!");
+    }
+    double ans = this.round(this.divide(Math.log(a), Math.log(n)));
+    answers.push(ans);
     return ans;
   }
 
   @Override
   public double sin(double a, boolean inRadians) {
-    double ans = Math.sin(inRadians ? a : Math.toRadians(a));
-    answers.push(String.valueOf(ans));
+    double ans = this.round(Math.sin(inRadians ? a : Math.toRadians(a)));
+    answers.push(ans);
     return ans;
   }
 
   @Override
   public double cos(double a, boolean inRadians) {
-    double ans = Math.cos(inRadians ? a : Math.toRadians(a));
-    answers.push(String.valueOf(ans));
+    double ans = this.round(Math.cos(inRadians ? a : Math.toRadians(a)));
+    answers.push(ans);
     return ans;
   }
 
   @Override
   public double tan(double a, boolean inRadians) {
-    double ans = Math.tan(inRadians ? a : Math.toRadians(a));
-    answers.push(String.valueOf(ans));
+    double ans;
+    try {
+      ans = this.round(Math.tan(inRadians ? a : Math.toRadians(a)));
+    } catch (Exception e) {
+      throw new IllegalArgumentException("a cannot be one of pi/2 + piK where K is an integer!");
+    }
+    answers.push(ans);
     return ans;
   }
 
   @Override
   public String complexAdd(int a1, int b1, int a2, int b2) {
     int bNew = b1 + b2;
-    String ans = (a1 + a2) + (bNew < 0 ? " - " : " + ") + Math.abs(bNew) + "i";
-    answers.push(ans);
+    String ans = (a1 + a2) + (bNew < 0 ? "-" : "+") + Math.abs(bNew) + "i";
+    //answers.push(ans);
     return ans;
   }
 
   @Override
   public String complexSub(int a1, int b1, int a2, int b2) {
     int bNew = b1 - b2;
-    String ans = (a1 - a2) + (bNew < 0 ? " - " : " + ") + Math.abs(bNew) + "i";
-    answers.push(ans);
+    String ans = (a1 - a2) + (bNew < 0 ? "-" : "+") + Math.abs(bNew) + "i";
+    //answers.push(ans);
     return ans;
   }
 
   @Override
   public String complexMulti(int a1, int b1, int a2, int b2) {
     int bNew = ((a1 * b2) + (a2 * b1));
-    String ans = ((a1 * a2) - (b1 * b2)) + (bNew < 0 ? " - " : " + ") + Math.abs(bNew) + "i";
-    answers.push(ans);
+    String ans = ((a1 * a2) - (b1 * b2)) + (bNew < 0 ? "-" : "+") + Math.abs(bNew) + "i";
+    //answers.push(ans);
     return ans;
   }
 
@@ -150,11 +182,11 @@ public class LoadedCalculatorModel implements ILoadedCalculatorModel {
     int aFinal = hold[0];
     int bFinal = hold[1];
 
-    int aNew = (int) Math.round((aFinal + 0.0) / this.complexNorm(a2, b2));
-    int bNew = (int) Math.round((bFinal + 0.0) / this.complexNorm(a2, b2));
+    int aNew = (int) Math.round((aFinal + 0.0) / (Math.pow(this.complexNorm(a2, b2), 2)));
+    int bNew = (int) Math.round((bFinal + 0.0) / (Math.pow(this.complexNorm(a2, b2), 2)));
 
-    String ans = aNew + (bNew < 0 ? " - " : " + ") + Math.abs(bNew) + "i";
-    answers.push(ans);
+    String ans = aNew + (bNew < 0 ? "-" : "+") + Math.abs(bNew) + "i";
+    //answers.push(ans);
     return ans;
   }
 
@@ -175,14 +207,14 @@ public class LoadedCalculatorModel implements ILoadedCalculatorModel {
     int bRemainder = hold[1];
 
     String remainder = this.complexSub(a1, b1, aRemainder, bRemainder);
-    answers.push(remainder);
+    //answers.push(remainder);
     return ans + " remainder: " + remainder;
   }
 
   @Override
-  public int complexNorm(int a, int b) {
-    int ans = a * a + b * b;
-    answers.push(String.valueOf(ans));
+  public double complexNorm(int a, int b) {
+    double ans = this.round(Math.sqrt(a * a + b * b));
+    answers.push(ans);
     return ans;
   }
 
@@ -192,35 +224,45 @@ public class LoadedCalculatorModel implements ILoadedCalculatorModel {
   }
 
   @Override
-  public String getAns() {
-    return this.answers.empty() ? "" : this.answers.pop();
+  public int getPrecision() {
+    return this.calc.getPrecision();
+  }
+
+  @Override
+  public double round(double d) {
+    return calc.round(d);
+  }
+
+  @Override
+  public double getAns() {
+    return this.answers.empty() ? 0.0 : this.answers.pop();
   }
 
   @Override
   public double add(double x, double y) {
     double ans = this.calc.add(x, y);
-    answers.push(String.valueOf(ans));
+    answers.push(ans);
     return ans;
   }
 
   @Override
   public double sub(double x, double y) {
     double ans = this.calc.sub(x, y);
-    answers.push(String.valueOf(ans));
+    answers.push(ans);
     return ans;
   }
 
   @Override
   public double multi(double x, double y) {
     double ans = this.calc.multi(x, y);
-    answers.push(String.valueOf(ans));
+    answers.push(ans);
     return ans;
   }
 
   @Override
   public double divide(double x, double y) throws IllegalArgumentException {
     double ans = this.calc.divide(x, y);
-    answers.push(String.valueOf(ans));
+    answers.push(ans);
     return ans;
   }
 }

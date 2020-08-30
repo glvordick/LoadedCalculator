@@ -66,6 +66,16 @@ public class SetPrecisionCalculator implements ISetPrecisionCalculator {
   }
 
   @Override
+  public int getPrecision() {
+    return this.precision;
+  }
+
+  @Override
+  public double round(double d) {
+    return Precision.round(d, this.precision, BigDecimal.ROUND_HALF_UP);
+  }
+
+  @Override
   public double add(double x, double y) {
     return Precision.round(this.sDC.add(x, y),
         this.precision,
