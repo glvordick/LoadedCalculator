@@ -3,7 +3,6 @@ package View;
 import Util.Utils;
 import java.util.Scanner;
 import java.util.function.Consumer;
-import org.w3c.dom.Text;
 
 public class TextualView implements ILoadedCalculatorView {
 
@@ -16,7 +15,6 @@ public class TextualView implements ILoadedCalculatorView {
   }
 
   private Consumer<String> commandCallback;
-
 
   @Override
   public void run() {
@@ -47,11 +45,11 @@ public class TextualView implements ILoadedCalculatorView {
   @Override
   public void acceptResult(String result) {
     try {
-      double d = Double.parseDouble(result);
+      Double.parseDouble(result);
       Utils.safeAppend(ap, " = " + result + "\n");
     } catch (NumberFormatException e) {
       try {
-        int[] a = Utils.complexFromString(result);
+        Utils.complexFromString(result);
         Utils.safeAppend(ap, " = " + result + "\n");
       } catch (IllegalArgumentException iae) {
         Utils.safeAppend(ap, result);
@@ -59,12 +57,6 @@ public class TextualView implements ILoadedCalculatorView {
           Utils.safeAppend(ap, "\n");
         }
       }
-
     }
-  }
-
-  @Override
-  public void acceptAnswer(String answer) {
-    acceptResult(answer);
   }
 }

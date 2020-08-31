@@ -9,6 +9,7 @@ import java.util.function.Consumer;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
@@ -59,7 +60,7 @@ public class LoadedCalculatorView extends JFrame implements ILoadedCalculatorVie
   //pack method is called.
 
   public LoadedCalculatorView() {
-    super("Calculator");
+    super("Loaded Calculator");
 
     this.setContentPane(mainPanel);
     this.setPreferredSize(new Dimension(525, 315));
@@ -398,6 +399,8 @@ public class LoadedCalculatorView extends JFrame implements ILoadedCalculatorVie
       }
     });
 
+
+
     this.addButton.addActionListener(new TextButtonListener());
     this.subtractButton.addActionListener(new TextButtonListener());
     this.multiplyButton.addActionListener(new TextButtonListener());
@@ -420,8 +423,6 @@ public class LoadedCalculatorView extends JFrame implements ILoadedCalculatorVie
     splitPane.setDividerLocation(splitPane.getWidth() / 2);
     splitPane.setBorder(new CompoundBorder());
 
-    System.out.println(this.inputArea.getSize());
-    System.out.println(this.outputArea.getSize());
   }
 
   @Override
@@ -456,14 +457,6 @@ public class LoadedCalculatorView extends JFrame implements ILoadedCalculatorVie
     String a = " ".repeat(25 - result.length());
     outputArea.append(a);
     outputArea.append(result);
-  }
-
-  @Override
-  public void acceptAnswer(String answer) {
-    if (answer.endsWith(".0")) {
-      answer = answer.substring(0, answer.length() - 2);
-    }
-    inputArea.append(answer);
   }
 
   class TextButtonListener implements ActionListener {

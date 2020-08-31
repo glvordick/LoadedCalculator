@@ -4,7 +4,7 @@ package Controller;
  * The controller interface for animate program. It can process commands which are then applied to
  * the proper model and view.
  */
-public interface IController {
+public interface ILoadedCalculatorController {
 
   /**
    * Takes in a command as a string and a list of possible arguments for the command, and runs the

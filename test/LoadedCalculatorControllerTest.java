@@ -1,20 +1,18 @@
 import static org.junit.Assert.*;
 
-import Controller.IController;
+import Controller.ILoadedCalculatorController;
 import Controller.LoadedCalculatorController;
 import Model.LoadedCalculator.ILoadedCalculatorModel;
 import Model.LoadedCalculator.LoadedCalculatorModel;
 import View.ILoadedCalculatorView;
-import View.LoadedCalculatorView;
 import View.TextualView;
 import java.io.StringReader;
-import java.util.Scanner;
 import org.junit.Before;
 import org.junit.Test;
 
 public class LoadedCalculatorControllerTest {
 
-  private IController cont;
+  private ILoadedCalculatorController cont;
   private ILoadedCalculatorModel model;
   private ILoadedCalculatorView view;
 
@@ -136,13 +134,78 @@ public class LoadedCalculatorControllerTest {
   }
 
   @Test
-  public void testProcessCAdd() {
+  public void testProcessCAdd1() {
     view = new TextualView(sb, new StringReader("cAdd 3+4i,2-i"));
     cont = new LoadedCalculatorController(view, model);
 
     cont.run();
     assertEquals(sb.toString(), "precision 5\nBegin!\ncAdd 3+4i,2-i = 5+3i\n");
   }
+
+  @Test
+  public void testProcessCAdd2() {
+    view = new TextualView(sb, new StringReader("cAdd 3,4"));
+    cont = new LoadedCalculatorController(view, model);
+
+    cont.run();
+    assertEquals(sb.toString(), "precision 5\nBegin!\ncAdd 3,4 = 7+0i\n");
+  }
+
+  @Test
+  public void testProcessCAdd3() {
+    view = new TextualView(sb, new StringReader("cAdd i,i"));
+    cont = new LoadedCalculatorController(view, model);
+
+    cont.run();
+    assertEquals(sb.toString(), "precision 5\nBegin!\ncAdd i,i = 0+2i\n");
+  }
+
+  @Test
+  public void testProcessCAdd4() {
+    view = new TextualView(sb, new StringReader("cAdd 3i,4i"));
+    cont = new LoadedCalculatorController(view, model);
+
+    cont.run();
+    assertEquals(sb.toString(), "precision 5\nBegin!\ncAdd 3i,4i = 0+7i\n");
+  }
+
+  @Test
+  public void testProcessCAdd5() {
+    view = new TextualView(sb, new StringReader("cAdd i,-i"));
+    cont = new LoadedCalculatorController(view, model);
+
+    cont.run();
+    assertEquals(sb.toString(), "precision 5\nBegin!\ncAdd i,-i = 0+0i\n");
+  }
+
+  @Test
+  public void testProcessCAdd6() {
+    view = new TextualView(sb, new StringReader("cAdd 123-123i,100+100i"));
+    cont = new LoadedCalculatorController(view, model);
+
+    cont.run();
+    assertEquals(sb.toString(), "precision 5\nBegin!\ncAdd 123-123i,100+100i = 223-23i\n");
+  }
+
+  @Test
+  public void testProcessCAdd7() {
+    view = new TextualView(sb, new StringReader("cAdd -3-4i,-6-4i"));
+    cont = new LoadedCalculatorController(view, model);
+
+    cont.run();
+    assertEquals(sb.toString(), "precision 5\nBegin!\ncAdd -3-4i,-6-4i = -9-8i\n");
+  }
+
+  @Test
+  public void testProcessCAdd8() {
+    view = new TextualView(sb, new StringReader("cAdd i,-2"));
+    cont = new LoadedCalculatorController(view, model);
+
+    cont.run();
+    assertEquals(sb.toString(), "precision 5\nBegin!\ncAdd i,-2 = -2+1i\n");
+  }
+
+
 
   @Test
   public void testProcessCSub() {
@@ -199,14 +262,14 @@ public class LoadedCalculatorControllerTest {
     assertEquals(sb.toString(), "precision 5\nBegin!\nprecision 7\nprecision 7\n");
   }
 
-  @Test
-  public void testProcessGetAns() {
-    view = new TextualView(sb, new StringReader("cNorm 3+4i\ngetAns"));
-    cont = new LoadedCalculatorController(view, model);
-
-    cont.run();
-    assertEquals(sb.toString(), "precision 5\nBegin!\ncNorm 3+4i = 5.0\ngetAns = 5.0\n");
-  }
+//  @Test
+//  public void testProcessGetAns() {
+//    view = new TextualView(sb, new StringReader("cNorm 3+4i\ngetAns"));
+//    cont = new LoadedCalculatorController(view, model);
+//
+//    cont.run();
+//    assertEquals(sb.toString(), "precision 5\nBegin!\ncNorm 3+4i = 5.0\ngetAns = 5.0\n");
+//  }
 
   @Test
   public void testProcessEqual() {
@@ -216,9 +279,4 @@ public class LoadedCalculatorControllerTest {
     cont.run();
     assertEquals(sb.toString(), "precision 5\nBegin!\nequal (20-(8+2))/8 = 1.25\n");
   }
-
-
-
-
-
 }

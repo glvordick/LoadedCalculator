@@ -77,23 +77,17 @@ public class SetPrecisionCalculator implements ISetPrecisionCalculator {
 
   @Override
   public double add(double x, double y) {
-    return Precision.round(this.sDC.add(x, y),
-        this.precision,
-        BigDecimal.ROUND_HALF_UP);
+    return this.round(this.sDC.add(x, y));
   }
 
   @Override
   public double sub(double x, double y) {
-    return Precision.round(this.sDC.sub(x, y),
-        this.precision,
-        BigDecimal.ROUND_HALF_UP);
+    return this.round(this.sDC.sub(x, y));
   }
 
   @Override
   public double multi(double x, double y) {
-    return Precision.round(this.sDC.multi(x, y),
-        this.precision,
-        BigDecimal.ROUND_HALF_UP);
+    return this.round(this.sDC.multi(x, y));
   }
 
   @Override
@@ -101,9 +95,7 @@ public class SetPrecisionCalculator implements ISetPrecisionCalculator {
     if (Math.abs(y) < Math.pow(10, -1 * precision)) {
       throw new IllegalArgumentException("Cannot divide by Zero.");
     } else {
-      return Precision.round(this.sDC.divide(x, y),
-          this.precision,
-          BigDecimal.ROUND_HALF_UP);
+      return this.round(this.sDC.divide(x, y));
     }
   }
 }

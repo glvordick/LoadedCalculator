@@ -10,12 +10,12 @@ import java.util.Scanner;
 import java.util.function.Consumer;
 
 /**
- * An implementation of the {@link IController} interface. This implementation is for a calculator
+ * An implementation of the {@link ILoadedCalculatorController} interface. This implementation is for a calculator
  * that has a view and model that need to be communicated with. This class implements the Consumer
  * interface in order to receive information from the view and act on it. This, in essence, makes
  * this class a listener for the View.
  */
-public class LoadedCalculatorController implements IController, Consumer<String> {
+public class LoadedCalculatorController implements ILoadedCalculatorController, Consumer<String> {
 
   private final ILoadedCalculatorView view;
   private final ILoadedCalculatorModel model;
@@ -36,7 +36,7 @@ public class LoadedCalculatorController implements IController, Consumer<String>
   @Override
   public void processCommand(String s, String args) {
     Map<String, Runnable> commands = new SupportedOperations().getOperations(args);
-    System.out.println(args);
+    //System.out.println(args);
 
     Runnable command = commands.get(s); // we get an empty runnable if no command found
 
@@ -79,7 +79,33 @@ public class LoadedCalculatorController implements IController, Consumer<String>
         .replace("pi", String.valueOf(Math.PI))
         .replace("e", String.valueOf(Math.E));
     if (params.contains("ans")) {
-      params = params.replace("ans", String.valueOf(this.model.getAns()));
+
+      String ans = String.valueOf(this.model.getAns());
+
+      for(int i = 0; i < params.length()-2; i++) {
+        String str = params.substring(i, i + 3);
+        if(str.equals("ans")) {
+          if(i > 0) {
+            try {
+              Double.parseDouble(String.valueOf(params.charAt(i-1)));
+            } catch(NumberFormatException e) {
+              try {
+                Double.parseDouble(String.valueOf(params.charAt(i+3)));
+              } catch (NumberFormatException | StringIndexOutOfBoundsException nfe) {
+                params = params.substring(0 , i) + ans + params.substring(i + 3);
+              }
+            }
+          } else {
+            try {
+              Double.parseDouble(String.valueOf(params.charAt(i+3)));
+            } catch (NumberFormatException | StringIndexOutOfBoundsException nfe) {
+              params = params.substring(0 , i) + ans + params.substring(i + 3);
+            }
+          }
+        }
+      }
+
+      //params = params.replace("ans", String.valueOf(this.model.getAns()));
     }
     processCommand(cmd, params);
   }
@@ -275,14 +301,6 @@ public class LoadedCalculatorController implements IController, Consumer<String>
           int p = Integer.parseInt(args);
           model.setPrecision(p);
           view.acceptResult("precision " + p);
-        } catch (StringIndexOutOfBoundsException e) {
-          throw new IllegalArgumentException("Invalid arguments given!");
-        }
-      });
-      commands.put("getAns", () -> {
-        try {
-          String ans = String.valueOf(model.getAns());
-          view.acceptAnswer(ans);
         } catch (StringIndexOutOfBoundsException e) {
           throw new IllegalArgumentException("Invalid arguments given!");
         }

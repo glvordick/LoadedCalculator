@@ -55,6 +55,18 @@ public class LoadedCalculatorModelImplTest {
   }
 
   @Test
+  public void testLog() {
+    assertEquals(lcm1.log(1000), 3, 0.001);
+    assertEquals(lcm2.log(Math.pow(10, 5.2091248284)), 5.209, 0.001);
+  }
+
+  @Test
+  public void testLN() {
+    assertEquals(lcm1.ln(Math.E), 1, 0.001);
+    assertEquals(lcm2.ln( Math.pow(Math.E, 5.2091248284)), 5.209, 0.001);
+  }
+
+  @Test
   public void testSin() {
     assertEquals(lcm1.sin(Math.PI, true), 0.0, 0.0001);
     assertEquals(lcm2.sin(Math.PI, false), .055, 0.001);
@@ -77,24 +89,42 @@ public class LoadedCalculatorModelImplTest {
     assertEquals(lcm1.complexAdd(3,4,1,2), "4+6i");
     assertEquals(lcm1.complexAdd(3,-4,4,2), "7-2i");
     assertEquals(lcm1.complexAdd(3,4,2,-1), "5+3i");
+
+    assertEquals(lcm1.complexAdd(-3,-4,-1,-2), "-4-6i");
+    assertEquals(lcm1.complexAdd(0,0,0,0), "0+0i");
+    assertEquals(lcm1.complexAdd(3,0,0,-1), "3-1i");
   }
 
   @Test
   public void testComplexSub() {
     assertEquals(lcm1.complexSub(3,4,1,2), "2+2i");
     assertEquals(lcm1.complexSub(3,-4,4,2), "-1-6i");
+
+    assertEquals(lcm1.complexSub(-3,-4,-1,-2), "-2-2i");
+    assertEquals(lcm1.complexSub(0,0,0,0), "0+0i");
+    assertEquals(lcm1.complexSub(3,0,0,-1), "3+1i");
   }
 
   @Test
   public void testComplexMulti() {
     assertEquals(lcm1.complexMulti(3,4,1,2), "-5+10i");
     assertEquals(lcm1.complexMulti(3,-4,4,2), "20-10i");
+
+
+    assertEquals(lcm1.complexMulti(-3,-4,-1,-2), "-5+10i");
+    assertEquals(lcm1.complexMulti(0,0,0,0), "0+0i");
+    assertEquals(lcm1.complexMulti(3,0,0,-1), "0-3i");
+
   }
 
   @Test
   public void testComplexDivide() {
     assertEquals(lcm1.complexDivide(73, 28, 6, 8), "7-4i");
     assertEquals(lcm1.complexDivide(12, 41, 5, -9), "-3+3i");
+
+    assertEquals(lcm1.complexDivide(-3,-4,-1,-2), "2+0i");
+    assertEquals(lcm1.complexDivide(0,0,0,0), "0+0i");
+    assertEquals(lcm1.complexDivide(3,0,0,-1), "0+3i");
   }
 
   @Test
@@ -105,6 +135,10 @@ public class LoadedCalculatorModelImplTest {
     assertEquals(
         lcm1.complexRemainder(12, 41, 5, -9),
         "-3+3i remainder: 0-1i");
+
+    assertEquals(lcm1.complexRemainder(-3,-4,-1,-2), "2+0i remainder: -1+0i");
+    assertEquals(lcm1.complexRemainder(0,0,0,0), "0+0i remainder: 0+0i");
+    assertEquals(lcm1.complexRemainder(3,0,0,-1), "0+3i remainder: 0+0i");
   }
 
 

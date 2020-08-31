@@ -230,7 +230,9 @@ public class LoadedCalculatorModel implements ILoadedCalculatorModel {
 
   @Override
   public double round(double d) {
-    return calc.round(d);
+    double ans = calc.round(d);
+    answers.push(ans);
+    return ans;
   }
 
   @Override

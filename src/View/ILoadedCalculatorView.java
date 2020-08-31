@@ -33,13 +33,4 @@ public interface ILoadedCalculatorView {
    * @param result the result of a calculation.
    */
   void acceptResult(String result);
-
-  /**
-   * Takes in the answer to be added to the output area.
-   *
-   * @param answer the result of a calculation.
-   */
-  void acceptAnswer(String answer);
-
-
 }

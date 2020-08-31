@@ -121,7 +121,7 @@ public class Utils {
           + equation.substring(rightParenFinder(equation, equation.indexOf("(")) + 1);
       return equationSolver(eq, calc);
     } if (equation.contains("-")) {
-      if (!equation.contains("+") || equation.indexOf("+") < equation.indexOf("-")) {
+      if (!equation.contains("+") || equation.lastIndexOf("+") < equation.indexOf("-")) {
         if (equation.indexOf("-") != 0) {
           return calc.sub(equationSolver(equation.substring(0, equation.indexOf("-")), calc),
               equationSolver(equation.substring(equation.indexOf("-") + 1), calc));
@@ -154,6 +154,14 @@ public class Utils {
     throw new IllegalArgumentException("Invalid Equation given!");
   }
 
+  /**
+   * Finds the right parenthesis associated with the left parenthesis in the equation.
+   * @param string The equation containing the parentheses.
+   * @param location The location of the left parenthesis in question.
+   * @return the location in the string of the right parenthesis.
+   *          -1 if there is no associated right paren.
+   * @throws IllegalArgumentException if there is no left paren at the given location.
+   */
   public static int rightParenFinder(String string, int location) throws IllegalArgumentException {
     if (string.charAt(location) != '(') {
       throw new IllegalArgumentException("Invalid String or location!");
@@ -192,6 +200,5 @@ public class Utils {
       throw new IllegalStateException("Append failed.");
     }
   }
-
 
 }

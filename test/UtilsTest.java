@@ -46,6 +46,8 @@ public class UtilsTest {
     assertEquals(Utils.equationSolver("3-6*5+27", c), 0, 0.00001);
     assertEquals(Utils.equationSolver("-3*3", c), -9, 0.00001);
     assertEquals(Utils.equationSolver("((((3+4)×5)÷7)*20)-30.3031", c), 69.6969, 0.00001);
+    assertEquals(Utils.equationSolver("3+6*2-3+8/2", c), 16, 0.00001);
+
   }
 
   @Test
