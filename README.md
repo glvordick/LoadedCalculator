@@ -34,7 +34,7 @@ extends both the ISetPrecisionCalculator and IStoringCalculator interface.
 This class uses a stack to implement the answer retrieval system, and a ISetPrecisionCalculator delegate
 to implement the rounding component. It implements all the methods from each interface that it implements.
 
-##View
+## View
 The view contains four files (one interface, 2 classes, and a GUI Form). 
 Here is an explanation of each one:
 - ILoadedCalculatorView: This interface represents a view that displays, in some way, a calculator. The interface
@@ -51,7 +51,7 @@ method.
 - LoadedCalculator.form: This file is the GUI designer. This file visually depicts the GUI through Intellij's
 GUI designer. 
 
-##Controller
+## Controller
 The controller consists of an interface and one implementation. Here is an explanation of each one:
 - ILoadedCalculatorController: This interface represents a controller and communicates with both the model 
 and the view. This interface only has two methods: run and processCommand. Run will begin the communication between
