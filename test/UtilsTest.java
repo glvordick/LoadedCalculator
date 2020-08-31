@@ -44,10 +44,25 @@ public class UtilsTest {
     assertEquals(Utils.equationSolver("(20-(8+2))/8", c), 1.25, 0.00001);
     assertEquals(Utils.equationSolver("3.14 - 2.5", c), 0.64, 0.00001);
     assertEquals(Utils.equationSolver("3-6*5+27", c), 0, 0.00001);
-    assertEquals(Utils.equationSolver("-3*3", c), -9, 0.00001);
     assertEquals(Utils.equationSolver("((((3+4)×5)÷7)*20)-30.3031", c), 69.6969, 0.00001);
     assertEquals(Utils.equationSolver("3+6*2-3+8/2", c), 16, 0.00001);
+    assertEquals(Utils.equationSolver("3*3-4/2*5", c), -1, 0.00001);
+    assertEquals(Utils.equationSolver("2*(-)3", c), -6, 0.00001);
+    assertEquals(Utils.equationSolver("(-)2*(-)3", c), 6, 0.00001);
+    assertEquals(Utils.equationSolver("(-)2*3", c), -6, 0.00001);
 
+    assertEquals(Utils.equationSolver("18/(-)3", c), -6, 0.00001);
+    assertEquals(Utils.equationSolver("(-)18/(-)3", c), 6, 0.00001);
+    assertEquals(Utils.equationSolver("(-)18/3", c), -6, 0.00001);
+
+    assertEquals(Utils.equationSolver("18+(-)3", c), 15, 0.00001);
+    assertEquals(Utils.equationSolver("(-)18+(-)3", c), -21, 0.00001);
+    assertEquals(Utils.equationSolver("(-)18+3", c), -15, 0.00001);
+
+
+    assertEquals(Utils.equationSolver("18-(-)3", c), 21, 0.00001);
+    assertEquals(Utils.equationSolver("(-)18-(-)3", c), -15, 0.00001);
+    assertEquals(Utils.equationSolver("(-)18-3", c), -21, 0.00001);
   }
 
   @Test
@@ -185,9 +200,9 @@ public class UtilsTest {
     Utils.equationSolver("HelloGarbage", c);
   }
 
-  @Test //(expected = IllegalArgumentException.class)
+  @Test (expected = IllegalArgumentException.class)
   public void testConsecutiveAdd() {
-    Utils.equationSolver("+4", c);
+    Utils.equationSolver("3++4", c);
   }
 
   @Test (expected = IllegalArgumentException.class)
@@ -203,5 +218,10 @@ public class UtilsTest {
   @Test (expected = IllegalArgumentException.class)
   public void testConsecutiveDiv() {
     Utils.equationSolver("3//4", c);
+  }
+
+  @Test (expected = IllegalArgumentException.class)
+  public void testEndingWithNeg() {
+    Utils.equationSolver("3*4(-)", c);
   }
 }

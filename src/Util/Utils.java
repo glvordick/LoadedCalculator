@@ -9,6 +9,10 @@ import java.util.Objects;
  */
 public class Utils {
 
+  //private constructor preventing instantiation.
+  private Utils() {
+  }
+
   /**
    * Given a string, returns the two coefficients of a complex number in an array.
    *
@@ -56,7 +60,7 @@ public class Utils {
       return new int[]{aNew, 1};
     } else if (complex.charAt(locBNew - 1) == '-') {
       return new int[]{aNew, -1};
-    } else{
+    } else {
       return new int[]{aNew, Integer.parseInt(complex.substring(locANew + 1, locBNew))};
     }
   }
@@ -92,16 +96,21 @@ public class Utils {
       return 0.0;
     }
     try {
-      double ans = Double.parseDouble(equation);
-      return calc.round(ans);
+      return adjustedParseDouble(equation);
     } catch (NumberFormatException e) {
-      if ((equation.indexOf(".") != equation.lastIndexOf("."))
+      if (((equation.indexOf(".") != equation.lastIndexOf("."))
           && !equation.contains("×") && equation.contains("+")
-          && equation.contains("-") && equation.contains("÷")) {
+          && equation.contains("-") && equation.contains("÷"))
+          || equation.indexOf("(-)") == equation.length()-3) {
         throw new IllegalArgumentException("Invalid Equation given!");
       }
+      if (equation.charAt(0) == '[' && equation.charAt(equation.length() - 1) == ']') {
+        return equationSolver(equation.substring(1, equation.length() - 1), calc);
+      }
     }
-    equation = equation.replace("+-", "-");
+    equation = equation.replace("×", "*").replace("÷", "/");
+    equation = applyNegative(equation);
+    int freeNeg = 0;
     if ((equation.contains("(") && !equation.contains(")"))
         || (!equation.contains("(") && equation.contains(")"))
         || (equation.indexOf(")") < equation.indexOf("("))
@@ -114,52 +123,197 @@ public class Utils {
         || equation.charAt(equation.length() - 1) == '/'
         || equation.charAt(equation.length() - 1) == '-') {
       throw new IllegalArgumentException("Invalid Equation given!");
-    } if (equation.contains("(")) {
+    }
+    if (equation.contains("(")) {
       String eq = equation.substring(0, equation.indexOf("("))
           + equationSolver(equation.substring(equation.indexOf("(") + 1,
           rightParenFinder(equation, equation.indexOf("("))), calc)
           + equation.substring(rightParenFinder(equation, equation.indexOf("(")) + 1);
       return equationSolver(eq, calc);
-    } if (equation.contains("-")) {
-      if (!equation.contains("+") || equation.lastIndexOf("+") < equation.indexOf("-")) {
-        if (equation.indexOf("-") != 0) {
-          return calc.sub(equationSolver(equation.substring(0, equation.indexOf("-")), calc),
-              equationSolver(equation.substring(equation.indexOf("-") + 1), calc));
+    }
+    try {
+      freeNeg = freeNegIndex(equation);
+    } catch (StringIndexOutOfBoundsException e) {
+      throw new IllegalArgumentException("Invalid input given!");
+    }
+    if ( freeNeg > 0) {
+      if (!equation.contains("+") || equation.lastIndexOf("+") < freeNeg) {
+        if (equation.contains("[") || equation.contains("]")) {
+          equation = negativeVsMinusProblem(equation, '-', calc);
+          return equationSolver(equation, calc);
         }
+        return calc.sub(equationSolver(equation.substring(0, equation.indexOf("-")), calc),
+            equationSolver(equation.substring(equation.indexOf("-") + 1), calc));
       } else {
         return calc.add(equationSolver(equation.substring(0, equation.indexOf("+")), calc),
             equationSolver(equation.substring(equation.indexOf("+") + 1), calc));
       }
     }
     if (equation.contains("+")) {
+      if (equation.contains("[") || equation.contains("]")) {
+        equation = negativeVsMinusProblem(equation, '+', calc);
+        return equationSolver(equation, calc);
+      }
       return calc.add(equationSolver(equation.substring(0, equation.indexOf("+")), calc),
           equationSolver(equation.substring(equation.indexOf("+") + 1), calc));
     }
-    if (equation.contains("×")) {
-      return calc.multi(equationSolver(equation.substring(0, equation.indexOf("×")), calc),
-          equationSolver(equation.substring(equation.indexOf("×") + 1), calc));
-    }
-    if (equation.contains("÷")) {
-      return calc.divide(equationSolver(equation.substring(0, equation.indexOf("÷")), calc),
-          equationSolver(equation.substring(equation.indexOf("÷") + 1), calc));
-    }
     if (equation.contains("*")) {
+      if (equation.contains("[") || equation.contains("]")) {
+        equation = negativeVsMinusProblem(equation, '*', calc);
+        return equationSolver(equation, calc);
+      }
+
       return calc.multi(equationSolver(equation.substring(0, equation.indexOf("*")), calc),
           equationSolver(equation.substring(equation.indexOf("*") + 1), calc));
+
     }
     if (equation.contains("/")) {
+      if (equation.contains("[") || equation.contains("]")) {
+        equation = negativeVsMinusProblem(equation, '/', calc);
+        return equationSolver(equation, calc);
+      }
       return calc.divide(equationSolver(equation.substring(0, equation.indexOf("/")), calc),
           equationSolver(equation.substring(equation.indexOf("/") + 1), calc));
     }
     throw new IllegalArgumentException("Invalid Equation given!");
   }
 
+  private static int freeNegIndex(String s) {
+    for(int i = 0; i < s.length()-1; i++) {
+      if(s.charAt(i) == '-' && s.charAt(i-1) != '[') {
+        return i;
+      }
+    }
+    return -1;
+  }
+
+  private static String negativeVsMinusProblem(String string, char symbol,
+      ILoadedCalculatorModel calc) {
+    String equation = string;
+    int index = symbol == '-' ? freeNegIndex(string) : equation.indexOf(symbol);
+    if (equation.charAt(index - 1) == ']' && equation.charAt(index + 1) == '[') {
+      int loc = equation.substring(index).indexOf(']') + index;
+      int locOfFirstBracket = equation.substring(0, index).lastIndexOf('[');
+
+      String part1 = equation.substring(0, locOfFirstBracket + 1);
+      double part2 = equationSolver(
+          equation.substring(
+              locOfFirstBracket + 2,
+              equation.substring(0, index).lastIndexOf(']'))
+              + symbol + equation.substring(
+              equation.substring(index).indexOf('[') + 2 + index,
+              loc), calc);
+
+      if (symbol == '+' || symbol == '-') {
+        part2 *= -1;
+      }
+      String part3 = equation.substring(loc);
+
+      equation = part1 + part2 + part3;
+
+      return equation;
+    } else if (equation.charAt(index - 1) == ']') {
+      String temp = equation.substring(index);
+      int locOfNextSymbol = 0;
+      for (int i = 1; i < temp.length(); i++) {
+        if (temp.charAt(i) == '-' || temp.charAt(i) == '+' || temp.charAt(i) == '*'
+            || temp.charAt(i) == '/' || temp.charAt(i) == '[' || temp.charAt(i) == ']') {
+          locOfNextSymbol = i + index;
+          i = temp.length();
+        }
+      }
+      if (locOfNextSymbol == 0) {
+        locOfNextSymbol = equation.length();
+      }
+      int locOfFirstBracket = equation.substring(0, index).lastIndexOf('[');
+
+      String part1 = equation.substring(
+          locOfFirstBracket + 2,
+          equation.substring(0, index).lastIndexOf(']'));
+      String part2 = equation.substring(index + 1, locOfNextSymbol);
+      double result = 0.0;
+      if (symbol == '+') {
+        result = equationSolver(part2 + '-' + part1, calc);
+      } else if(symbol == '-') {
+        result = -1 * equationSolver(part2 + '+' + part1, calc);
+      } else {
+        result = -1 * equationSolver(part1 + symbol + part2, calc);
+      }
+
+      equation = equation.substring(0, locOfFirstBracket + 1) + result +
+          "]" + equation.substring(locOfNextSymbol);
+
+      return equation;
+    } else if (equation.charAt(index + 1) == '[') {
+      String temp = equation.substring(0, index);
+      int locOfPrevSymbol = temp.length();
+      for (int i = temp.length() - 1; i >= 0; i--) {
+        if (temp.charAt(i) == '-' || temp.charAt(i) == '+' || temp.charAt(i) == '*'
+            || temp.charAt(i) == '/' || temp.charAt(i) == '[' || temp.charAt(i) == ']') {
+          locOfPrevSymbol = i + index;
+          i = -1;
+        }
+      }
+      if (locOfPrevSymbol == temp.length()) {
+        locOfPrevSymbol = -1;
+      }
+
+      int loc = equation.substring(index).indexOf(']') + index;
+
+
+      String part1 = equation.substring(
+          locOfPrevSymbol + 1,
+          index);
+      String part2 = equation.substring(
+          equation.substring(index).indexOf('[') + 2 + index,
+          loc);
+      double result = 0.0;
+      if (symbol == '+') {
+        result = equationSolver(part1 + '-' + part2, calc);
+      } else if (symbol == '-') {
+        result = equationSolver(part1 + '+' + part2, calc);
+      }else {
+        result = -1 * equationSolver(part1 + symbol + part2, calc);
+      }
+      equation = equation.substring(0, locOfPrevSymbol + 1) + "["
+          + result
+          + equation.substring(loc);
+
+      return equation;
+    }
+
+    return string;
+  }
+
+  //This method changes (-) -> [-...] where every digit of the
+  // number being negated is inside the brackets.
+  private static String applyNegative(String equation) {
+    String answer = equation;
+    answer = answer.replace("(-)", "[-]");
+    while (answer.contains("[-]")) {
+      for (int i = answer.indexOf("[-]") + 3; i < answer.length(); i++) {
+        try {
+          char c = answer.charAt(i);
+          int digit = 0;
+          if (c != '.') {
+            digit = Integer.parseInt(String.valueOf(c));
+          }
+          answer = answer.substring(0, i - 1) + digit + "]" + answer.substring(i + 1);
+        } catch (NumberFormatException nfe) {
+          i = answer.length();
+        }
+      }
+    }
+    return answer;
+  }
+
   /**
    * Finds the right parenthesis associated with the left parenthesis in the equation.
-   * @param string The equation containing the parentheses.
+   *
+   * @param string   The equation containing the parentheses.
    * @param location The location of the left parenthesis in question.
-   * @return the location in the string of the right parenthesis.
-   *          -1 if there is no associated right paren.
+   * @return the location in the string of the right parenthesis. -1 if there is no associated right
+   * paren.
    * @throws IllegalArgumentException if there is no left paren at the given location.
    */
   public static int rightParenFinder(String string, int location) throws IllegalArgumentException {
@@ -200,5 +354,14 @@ public class Utils {
       throw new IllegalStateException("Append failed.");
     }
   }
+
+  public static double adjustedParseDouble(String str) throws NumberFormatException {
+    if (str.charAt(0) == '+') {
+      throw new NumberFormatException("Invalid Character!");
+    } else {
+      return Double.parseDouble(str);
+    }
+  }
+
 
 }

@@ -254,6 +254,24 @@ public class LoadedCalculatorControllerTest {
   }
 
   @Test
+  public void testProcessLinCom() {
+    view = new TextualView(sb, new StringReader("linCom 0.123456789,0,100"));
+    cont = new LoadedCalculatorController(view, model);
+
+    cont.run();
+    assertEquals(sb.toString(), "precision 5\nBegin!\nlinCom 0.123456789,0,100 = 12.34568\n");
+  }
+
+  @Test
+  public void testProcessAbs() {
+    view = new TextualView(sb, new StringReader("abs -17.38"));
+    cont = new LoadedCalculatorController(view, model);
+
+    cont.run();
+    assertEquals(sb.toString(), "precision 5\nBegin!\nabs -17.38 = 17.38\n");
+  }
+
+  @Test
   public void testProcessPrecision() {
     view = new TextualView(sb, new StringReader("precision 7"));
     cont = new LoadedCalculatorController(view, model);
@@ -261,15 +279,6 @@ public class LoadedCalculatorControllerTest {
     cont.run();
     assertEquals(sb.toString(), "precision 5\nBegin!\nprecision 7\nprecision 7\n");
   }
-
-//  @Test
-//  public void testProcessGetAns() {
-//    view = new TextualView(sb, new StringReader("cNorm 3+4i\ngetAns"));
-//    cont = new LoadedCalculatorController(view, model);
-//
-//    cont.run();
-//    assertEquals(sb.toString(), "precision 5\nBegin!\ncNorm 3+4i = 5.0\ngetAns = 5.0\n");
-//  }
 
   @Test
   public void testProcessEqual() {

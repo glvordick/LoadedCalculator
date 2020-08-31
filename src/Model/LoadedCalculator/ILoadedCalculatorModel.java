@@ -181,4 +181,24 @@ public interface ILoadedCalculatorModel
    */
   double complexNorm(int a, int b);
 
+  /**
+   * Computes a linear combination between a and b, with a weight on a and b defined by the ratio.
+   *
+   * @param ratio the weight between a and b
+   * @param a     the first number
+   * @param b     the second number
+   * @return a linear combination between a and b, with a ratio of 0 being towards a, and 1 being
+   * towards b.
+   * @throws IllegalArgumentException if ratio is not between 0 and 1.
+   */
+  double linearCombination(double ratio, double a, double b) throws IllegalArgumentException;
+
+  /**
+   * Computes the absolute value of the given double.
+   *
+   * @param d the number that the absolute value is being taken of.
+   * @return The absolute value of d.
+   */
+  double abs(double d);
+
 }

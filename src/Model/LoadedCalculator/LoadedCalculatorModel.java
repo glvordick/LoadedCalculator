@@ -219,6 +219,24 @@ public class LoadedCalculatorModel implements ILoadedCalculatorModel {
   }
 
   @Override
+  public double linearCombination(double ratio, double a, double b)
+      throws IllegalArgumentException {
+    if (ratio < 0 || ratio > 1) {
+      throw new IllegalArgumentException("Invalid ratio.");
+    }
+    double ans = this.round(a + (ratio * (b - a)));
+    answers.push(ans);
+    return ans;
+  }
+
+  @Override
+  public double abs(double d) {
+    double ans = this.round(Math.abs(d));
+    answers.push(ans);
+    return ans;
+  }
+
+  @Override
   public void setPrecision(int p) throws IllegalArgumentException {
     this.calc.setPrecision(p);
   }

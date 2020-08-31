@@ -6,7 +6,8 @@ import View.LoadedCalculatorView;
 public class LoadedCalculator {
 
   public static void main(String[] args) {
-    ILoadedCalculatorController controller = new LoadedCalculatorController(new LoadedCalculatorView(),
+    ILoadedCalculatorController controller = new LoadedCalculatorController(
+        new LoadedCalculatorView(),
         new LoadedCalculatorModel());
     controller.run();
 

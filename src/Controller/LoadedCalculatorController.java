@@ -10,10 +10,10 @@ import java.util.Scanner;
 import java.util.function.Consumer;
 
 /**
- * An implementation of the {@link ILoadedCalculatorController} interface. This implementation is for a calculator
- * that has a view and model that need to be communicated with. This class implements the Consumer
- * interface in order to receive information from the view and act on it. This, in essence, makes
- * this class a listener for the View.
+ * An implementation of the {@link ILoadedCalculatorController} interface. This implementation is
+ * for a calculator that has a view and model that need to be communicated with. This class
+ * implements the Consumer interface in order to receive information from the view and act on it.
+ * This, in essence, makes this class a listener for the View.
  */
 public class LoadedCalculatorController implements ILoadedCalculatorController, Consumer<String> {
 
@@ -82,24 +82,24 @@ public class LoadedCalculatorController implements ILoadedCalculatorController, 
 
       String ans = String.valueOf(this.model.getAns());
 
-      for(int i = 0; i < params.length()-2; i++) {
+      for (int i = 0; i < params.length() - 2; i++) {
         String str = params.substring(i, i + 3);
-        if(str.equals("ans")) {
-          if(i > 0) {
+        if (str.equals("ans")) {
+          if (i > 0) {
             try {
-              Double.parseDouble(String.valueOf(params.charAt(i-1)));
-            } catch(NumberFormatException e) {
+              Double.parseDouble(String.valueOf(params.charAt(i - 1)));
+            } catch (NumberFormatException e) {
               try {
-                Double.parseDouble(String.valueOf(params.charAt(i+3)));
+                Double.parseDouble(String.valueOf(params.charAt(i + 3)));
               } catch (NumberFormatException | StringIndexOutOfBoundsException nfe) {
-                params = params.substring(0 , i) + ans + params.substring(i + 3);
+                params = params.substring(0, i) + ans + params.substring(i + 3);
               }
             }
           } else {
             try {
-              Double.parseDouble(String.valueOf(params.charAt(i+3)));
+              Double.parseDouble(String.valueOf(params.charAt(i + 3)));
             } catch (NumberFormatException | StringIndexOutOfBoundsException nfe) {
-              params = params.substring(0 , i) + ans + params.substring(i + 3);
+              params = params.substring(0, i) + ans + params.substring(i + 3);
             }
           }
         }
@@ -291,6 +291,28 @@ public class LoadedCalculatorController implements ILoadedCalculatorController, 
         try {
           int[] complex1 = Utils.complexFromString(args);
           double ans = model.complexNorm(complex1[0], complex1[1]);
+          view.acceptResult(String.valueOf(ans));
+        } catch (StringIndexOutOfBoundsException e) {
+          throw new IllegalArgumentException("Invalid arguments given!");
+        }
+      });
+      commands.put("linCom", () -> {
+        try {
+          double ratio = Utils.equationSolver(args.substring(0, args.indexOf(",")), model);
+          double a = Utils.equationSolver(
+              args.substring(args.indexOf(",") + 1, args.lastIndexOf(",")), model);
+          double b = Utils.equationSolver(args.substring(args.lastIndexOf(",") + 1), model);
+          double ans = model.linearCombination(ratio, a, b);
+          view.acceptResult(String.valueOf(ans));
+        } catch (StringIndexOutOfBoundsException e) {
+          throw new IllegalArgumentException("Invalid arguments given!");
+        }
+      });
+
+      commands.put("abs", () -> {
+        try {
+          double d = Utils.equationSolver(args, model);
+          double ans = model.abs(d);
           view.acceptResult(String.valueOf(ans));
         } catch (StringIndexOutOfBoundsException e) {
           throw new IllegalArgumentException("Invalid arguments given!");

@@ -9,7 +9,7 @@ public class TextualView implements ILoadedCalculatorView {
   private final Appendable ap;
   private final Readable rd;
 
-  public TextualView (Appendable ap, Readable rd) {
+  public TextualView(Appendable ap, Readable rd) {
     this.ap = ap;
     this.rd = rd;
   }
@@ -53,7 +53,7 @@ public class TextualView implements ILoadedCalculatorView {
         Utils.safeAppend(ap, " = " + result + "\n");
       } catch (IllegalArgumentException iae) {
         Utils.safeAppend(ap, result);
-        if(result.contains("precision")) {
+        if (result.contains("precision")) {
           Utils.safeAppend(ap, "\n");
         }
       }

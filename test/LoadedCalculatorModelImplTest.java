@@ -141,6 +141,27 @@ public class LoadedCalculatorModelImplTest {
     assertEquals(lcm1.complexRemainder(3,0,0,-1), "0+3i remainder: 0+0i");
   }
 
+  @Test
+  public void testComplexNorm() {
+    assertEquals(lcm1.complexNorm(3,4), 5, 0.00001);
+    assertEquals(lcm2.complexNorm(1,1), 1.414, 0.001);
+    assertEquals(lcm1.complexNorm(4,4), 5.65685, 0.00001);
+    assertEquals(lcm2.complexNorm(0,2), 2, 0.001);
+  }
+
+  @Test
+  public void testLinearCombination() {
+    assertEquals(10.0, lcm1.linearCombination(0.5, 7.5, 12.5), 0.001);
+    assertEquals(12.346, lcm2.linearCombination(0.123456789, 0, 100), 0.0001);
+    assertEquals(12.34568, lcm1.linearCombination(0.123456789, 0, 100), 0.000001);
+  }
+
+  @Test
+  public void testAbs() {
+    assertEquals(10.0, lcm1.abs(10), 0.001);
+    assertEquals(10.0, lcm1.abs(-10), 0.001);
+  }
+
 
   @Test
   public void testSetPrecision() {
