@@ -2,6 +2,33 @@
 The goal of this project is to create a calculator that has all the functionality of your average 
 phone calculator, but also has some more complicated operations stored within a catalog.
 
+# Supported Operations
+Here is the list of operations this calculator currently supports:
+- Addition
+- Subtraction
+- Multiplication
+- Division
+- Complex Number Addition
+- Complex Number Subtraction
+- Complex Number Multiplication
+- Complex Number Division
+- Complex Number Remainder
+- Complex Number Norm
+- GCD
+- LCM
+- Prime Checking (Up to 2^31 - 1)
+- Exponential Equations (2^3)
+- Base 10 Logarithm
+- Natural Logarithm
+- Base N Logarithm
+- Modulo
+- Absolute Value
+- Sine
+- Cosine
+- Tangent
+- Factoring Quadratic Expressions
+- Linear Combination of two numbers
+
 # Classes and Interfaces
 ## Model
 The Model has 10 classes and interfaces that describe the inner workings of the calculator. Here is a list of the classes
