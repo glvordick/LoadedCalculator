@@ -17,7 +17,7 @@ Here is the list of operations this calculator currently supports:
 - GCD
 - LCM
 - Prime Checking (Up to 2^31 - 1)
-- Exponential Equations (2^3)
+- Exponential Equations (Ex. 2^3)
 - Base 10 Logarithm
 - Natural Logarithm
 - Base N Logarithm
@@ -28,6 +28,9 @@ Here is the list of operations this calculator currently supports:
 - Tangent
 - Factoring Quadratic Expressions
 - Linear Combination of two numbers
+- Factorial
+- Combination
+- Permutation
 
 # Classes and Interfaces
 ## Model

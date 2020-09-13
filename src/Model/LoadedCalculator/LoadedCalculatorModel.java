@@ -71,7 +71,7 @@ public class LoadedCalculatorModel implements ILoadedCalculatorModel {
       return true;
     }
 
-    for (int i = 2; i < (int) Math.sqrt(p); i++) {
+    for (int i = 2; i <= (int) Math.sqrt(p); i++) {
       if (p % i == 0) {
         return false;
       }
@@ -237,6 +237,54 @@ public class LoadedCalculatorModel implements ILoadedCalculatorModel {
   }
 
   @Override
+  public double[] quadraticFormula(double a, double b, double c) {
+
+    double discriminant = Math.pow(b,2) - 4 * a * c;
+    if(discriminant < 0) {
+      discriminant = Math.sqrt(-1 * discriminant);
+      return new double[] {this.round(((-1 * b) - discriminant) / (2 * a)),
+          this.round(((-1 * b) + discriminant) / (2 * a)), -1};
+    } else {
+      discriminant = Math.sqrt(discriminant);
+      return new double[] {this.round(((-1 * b) - discriminant) / (2 * a)),
+          this.round(((-1 * b) + discriminant) / (2 * a))};
+    }
+  }
+
+  @Override
+  public long factorial(int a) {
+
+    long l = factorialTail(a, 1);
+    this.answers.push(l + 0.0);
+    return l;
+  }
+
+  @Override
+  public long combination(int n, int r) {
+    long l = factorialTail(n, 1) / (factorialTail(r, 1) * factorialTail(n-r, 1) );
+    this.answers.push(l + 0.0);
+    return l;
+  }
+
+  @Override
+  public long permutation(int n, int r) {
+    long l = factorialTail(n, 1) / ( factorialTail(n-r, 1) );
+    this.answers.push(l + 0.0);
+    return l;
+  }
+
+  private long factorialTail(int a, long prod) {
+    if (a < 0) {
+      throw new IllegalArgumentException("Must give a non-negative integer!");
+    } else if (a == 0) {
+      return prod;
+    } else {
+      return factorialTail(a - 1, a * prod);
+    }
+  }
+
+
+  @Override
   public void setPrecision(int p) throws IllegalArgumentException {
     this.calc.setPrecision(p);
   }
@@ -249,7 +297,7 @@ public class LoadedCalculatorModel implements ILoadedCalculatorModel {
   @Override
   public double round(double d) {
     double ans = calc.round(d);
-    answers.push(ans);
+    //answers.push(ans);
     return ans;
   }
 

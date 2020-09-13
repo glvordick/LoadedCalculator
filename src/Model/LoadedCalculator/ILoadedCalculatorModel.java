@@ -201,4 +201,37 @@ public interface ILoadedCalculatorModel
    */
   double abs(double d);
 
+  /**
+   * Solves the quadratic formula with the given a, b, and c values
+   * @param a The coefficient of the x^2 term.
+   * @param b The coefficient of the x term
+   * @param c The constant term.
+   * @return The two zeros of the equation.
+   */
+  double[] quadraticFormula(double a, double b, double c);
+
+  /**
+   * Computes the factorial of the given value.
+   * @param a The given number.
+   * @return a * a-1 * a-2 * ... * 2 * 1 or a factorial
+   * @throws IllegalArgumentException if a < 0.
+   */
+  long factorial(int a) throws IllegalArgumentException;
+
+  /**
+   * Computes the total number of combinations of picking r objects from n total
+   * (order does not matter).
+   * @param n The total number of objects.
+   * @param r The number being selected.
+   * @return Returns n!/(r! * (n-r)!)
+   */
+  long combination(int n, int r);
+
+  /**
+   * Computes the total number of permutations of picking r objects from n total (order matters).
+   * @param n The total number of objects.
+   * @param r The number being selected.
+   * @return Returns n!/(n-r!)
+   */
+  long permutation(int n, int r);
 }

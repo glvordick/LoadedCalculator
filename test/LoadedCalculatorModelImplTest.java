@@ -34,6 +34,7 @@ public class LoadedCalculatorModelImplTest {
   public void testPrime() {
     assertTrue(lcm1.prime(73));
     assertFalse(lcm1.prime(120));
+    assertFalse(lcm1.prime(8));
   }
 
   @Test
@@ -157,11 +158,36 @@ public class LoadedCalculatorModelImplTest {
   }
 
   @Test
+  public void testQuadFact() {
+    assertArrayEquals(new double[]{-2.0,-2.0}, lcm1.quadraticFormula(1,4,4), 0.0001);
+    assertArrayEquals(new double[]{-2.0,-2.0}, lcm1.quadraticFormula(3,12,12), 0.0001);
+    assertArrayEquals(new double[]{-1.0,1.0,-1}, lcm1.quadraticFormula(1,0,1), 0.0001);
+    assertArrayEquals(new double[]{0.29815, 1.84471}, lcm1.quadraticFormula(7,-15,3.85), 0.0001);
+  }
+
+  @Test
   public void testAbs() {
     assertEquals(10.0, lcm1.abs(10), 0.001);
     assertEquals(10.0, lcm1.abs(-10), 0.001);
   }
 
+  @Test
+  public void testFactorial() {
+    assertEquals(720, lcm1.factorial(6));
+    assertEquals(1, lcm1.factorial(0));
+  }
+
+  @Test
+  public void testCombination() {
+    assertEquals(15, lcm1.combination(6,4));
+    assertEquals(15, lcm1.combination(6,2));
+  }
+
+  @Test
+  public void testPermutation() {
+    assertEquals(360, lcm1.permutation(6,4));
+    assertEquals(30, lcm1.permutation(6,2));
+  }
 
   @Test
   public void testSetPrecision() {
@@ -280,5 +306,8 @@ public class LoadedCalculatorModelImplTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void testBadPrime1() { lcm1.prime(-2);}
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testBadFact() { lcm1.factorial(-3);}
 
 }

@@ -75,6 +75,22 @@ public class UtilsTest {
     assertEquals(Utils.rightParenFinder("abcdef(helloWorld)fkafa", 6), 17);
   }
 
+  @Test
+  public void testAdjustedParseDouble() {
+    assertEquals(3.14, Utils.adjustedParseDouble("3.14"), 0.00001);
+    assertEquals(-3.14, Utils.adjustedParseDouble("-3.14"), 0.00001);
+  }
+
+  @Test (expected = NumberFormatException.class)
+  public void testIllegalDouble1() {
+    Utils.adjustedParseDouble("+3.14");
+  }
+
+  @Test (expected = NumberFormatException.class)
+  public void testIllegalDouble2() {
+    Utils.adjustedParseDouble("Hello World!");
+  }
+
   @Test(expected = NumberFormatException.class)
   public void testEmptyStringComplex() {
     Utils.complexFromString("");
@@ -223,5 +239,10 @@ public class UtilsTest {
   @Test (expected = IllegalArgumentException.class)
   public void testEndingWithNeg() {
     Utils.equationSolver("3*4(-)", c);
+  }
+
+  @Test (expected = IllegalArgumentException.class)
+  public void testConsecNeg() {
+    Utils.equationSolver("(-)(-)3", c);
   }
 }

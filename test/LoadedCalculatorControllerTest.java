@@ -281,11 +281,54 @@ public class LoadedCalculatorControllerTest {
   }
 
   @Test
-  public void testProcessEqual() {
+  public void testProcessEqual1() {
     view = new TextualView(sb, new StringReader("equal (20-(8+2))/8"));
     cont = new LoadedCalculatorController(view, model);
 
     cont.run();
     assertEquals(sb.toString(), "precision 5\nBegin!\nequal (20-(8+2))/8 = 1.25\n");
   }
+
+  @Test
+  public void testProcessEqual2() {
+    view = new TextualView(sb, new StringReader("equal (-)18.0+6"));
+    cont = new LoadedCalculatorController(view, model);
+
+    cont.run();
+    assertEquals(sb.toString(), "precision 5\nBegin!\nequal (-)18.0+6 = -12.0\n");
+  }
+
+  @Test
+  public void testProcessQuadFact() {
+    view = new TextualView(sb, new StringReader("quadFact 3,(-)5,4"));
+    cont = new LoadedCalculatorController(view, model);
+
+    cont.run();
+    assertEquals(sb.toString(), "precision 5\n"
+        + "Begin!\n"
+        + "quadFact 3,(-)5,4 = 3.0(x-1.63264i)(x-1.63264i)\n");
+  }
+
+  @Test
+  public void testProcessQuadFact2() {
+    view = new TextualView(sb, new StringReader("quadFact 17,(-)8,21"));
+    cont = new LoadedCalculatorController(view, model);
+
+    cont.run();
+    assertEquals(sb.toString(), "precision 5\n"
+        + "Begin!\n"
+        + "quadFact 17,(-)8,21 = 17.0(x+0.85095i)(x-1.32154i)\n");
+  }
+
+  @Test
+  public void testProcessFact() {
+    view = new TextualView(sb, new StringReader("fact 17"));
+    cont = new LoadedCalculatorController(view, model);
+
+    cont.run();
+    assertEquals(sb.toString(), "precision 5\n"
+        + "Begin!\n"
+        + "fact 17 = 355687428096000\n");
+  }
+
 }

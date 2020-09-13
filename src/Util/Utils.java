@@ -101,8 +101,9 @@ public class Utils {
       if (((equation.indexOf(".") != equation.lastIndexOf("."))
           && !equation.contains("×") && equation.contains("+")
           && equation.contains("-") && equation.contains("÷"))
-          || equation.indexOf("(-)") == equation.length()-3) {
-        throw new IllegalArgumentException("Invalid Equation given!");
+          || equation.indexOf("(-)") == equation.length()-3
+          || 0 == equation.substring(equation.indexOf("(-)")+3).indexOf("(-)")) {
+        throw new IllegalArgumentException("Invalid equation given!");
       }
       if (equation.charAt(0) == '[' && equation.charAt(equation.length() - 1) == ']') {
         return equationSolver(equation.substring(1, equation.length() - 1), calc);
@@ -122,7 +123,7 @@ public class Utils {
         || equation.charAt(equation.length() - 1) == '*'
         || equation.charAt(equation.length() - 1) == '/'
         || equation.charAt(equation.length() - 1) == '-') {
-      throw new IllegalArgumentException("Invalid Equation given!");
+      throw new IllegalArgumentException("Invalid equation given!");
     }
     if (equation.contains("(")) {
       String eq = equation.substring(0, equation.indexOf("("))
@@ -132,9 +133,9 @@ public class Utils {
       return equationSolver(eq, calc);
     }
     try {
-      freeNeg = freeNegIndex(equation);
+      freeNeg = freeMinusIndex(equation);
     } catch (StringIndexOutOfBoundsException e) {
-      throw new IllegalArgumentException("Invalid input given!");
+      throw new IllegalArgumentException("Invalid equation given!");
     }
     if ( freeNeg > 0) {
       if (!equation.contains("+") || equation.lastIndexOf("+") < freeNeg) {
@@ -175,10 +176,17 @@ public class Utils {
       return calc.divide(equationSolver(equation.substring(0, equation.indexOf("/")), calc),
           equationSolver(equation.substring(equation.indexOf("/") + 1), calc));
     }
+    if (equation.charAt(0) == '[' && equation.charAt(equation.length() - 1) == ']') {
+      return equationSolver(equation.substring(1, equation.length() - 1), calc);
+    }
     throw new IllegalArgumentException("Invalid Equation given!");
   }
 
-  private static int freeNegIndex(String s) {
+  //Finds the first free minus sign in the equation, returns -1 if there is none.
+  //A free minus sign is one not being used as a negative sign
+  //For example, freeMinusIndex("[-3]+12-6") would return 7, as index 7 contains the minus sign,
+  //which is specifically used for subtraction
+  private static int freeMinusIndex(String s) {
     for(int i = 0; i < s.length()-1; i++) {
       if(s.charAt(i) == '-' && s.charAt(i-1) != '[') {
         return i;
@@ -187,10 +195,14 @@ public class Utils {
     return -1;
   }
 
+  //This method deals with the issue of applying a negative sign to an expression vs. subtracting
+  //an expression from another. This method is used to evaluate what is being negated while
+  //retaining the rest of the expression. Each operation does it differently and the string needs
+  //to be created so the equation will still evaluate to the same value.
   private static String negativeVsMinusProblem(String string, char symbol,
       ILoadedCalculatorModel calc) {
     String equation = string;
-    int index = symbol == '-' ? freeNegIndex(string) : equation.indexOf(symbol);
+    int index = symbol == '-' ? freeMinusIndex(string) : equation.indexOf(symbol);
     if (equation.charAt(index - 1) == ']' && equation.charAt(index + 1) == '[') {
       int loc = equation.substring(index).indexOf(']') + index;
       int locOfFirstBracket = equation.substring(0, index).lastIndexOf('[');
@@ -294,9 +306,9 @@ public class Utils {
       for (int i = answer.indexOf("[-]") + 3; i < answer.length(); i++) {
         try {
           char c = answer.charAt(i);
-          int digit = 0;
+          String digit = ".";
           if (c != '.') {
-            digit = Integer.parseInt(String.valueOf(c));
+            digit =  String.valueOf(Integer.parseInt(String.valueOf(c)));
           }
           answer = answer.substring(0, i - 1) + digit + "]" + answer.substring(i + 1);
         } catch (NumberFormatException nfe) {
@@ -355,6 +367,14 @@ public class Utils {
     }
   }
 
+  /**
+   * This changes the way the ParseDouble method works. This method will not accept "+3.5" as a
+   * valid double.
+   * @param str The string to be parsed.
+   * @return The double equivalent of the given string.
+   * @throws NumberFormatException If the string starts with a "+" or if the String does not contain
+   * a Parsable Double.
+   */
   public static double adjustedParseDouble(String str) throws NumberFormatException {
     if (str.charAt(0) == '+') {
       throw new NumberFormatException("Invalid Character!");

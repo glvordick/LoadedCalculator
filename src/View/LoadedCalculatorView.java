@@ -61,7 +61,6 @@ public class LoadedCalculatorView extends JFrame implements ILoadedCalculatorVie
 
   //None can be final as LoadedCalculator.form describes the layout, but they aren't added until the
   //pack method is called.
-
   public LoadedCalculatorView() {
     super("Loaded Calculator");
 
@@ -112,9 +111,7 @@ public class LoadedCalculatorView extends JFrame implements ILoadedCalculatorVie
     this.clearButton.addActionListener(e ->
         this.inputArea.setText(""));
 
-    this.ansButton.addActionListener(e -> {
-      inputArea.append("ANS");
-    });
+    this.ansButton.addActionListener(e -> inputArea.append("ANS"));
 
     //This is very complicated as each option requires a different action to be taken.
     this.catalogButton.addActionListener(e -> {
@@ -122,7 +119,8 @@ public class LoadedCalculatorView extends JFrame implements ILoadedCalculatorVie
           "LogBaseN", "Sin",
           "Cos", "Tan", "Complex Addition", "Complex Subtraction", "Complex Multiplication",
           "Complex Division",
-          "Complex Remainder", "Complex Norm", "exit", "Linear Combination", "Absolute Value"};
+          "Complex Remainder", "Complex Norm", "exit", "Linear Combination", "Absolute Value",
+          "Factor a Quadratic", "Factorial", "Combination", "Permutation"};
       Arrays.sort(possibilities);
       String s = (String) JOptionPane.showInputDialog(
           this,
@@ -145,9 +143,12 @@ public class LoadedCalculatorView extends JFrame implements ILoadedCalculatorVie
               null,
               null,
               "");
+          if (params == null) {
+            break;
+          }
           String str = "GCD(" + params + ")";
           outputArea.setText(str);
-          outputArea.append(" ".repeat(25 - str.length()));
+          outputArea.append(" ".repeat(28 - str.length()));
           callbackHelper("gcd " + Utils.removeAllChar(params, ' '));
           break;
         }
@@ -160,9 +161,12 @@ public class LoadedCalculatorView extends JFrame implements ILoadedCalculatorVie
               null,
               null,
               "");
+          if (params == null) {
+            break;
+          }
           String str = "LCM(" + params + ")";
           outputArea.setText(str);
-          outputArea.append(" ".repeat(25 - str.length()));
+          outputArea.append(" ".repeat(28 - str.length()));
           callbackHelper("lcm " + Utils.removeAllChar(params, ' '));
           break;
         }
@@ -175,9 +179,12 @@ public class LoadedCalculatorView extends JFrame implements ILoadedCalculatorVie
               null,
               null,
               "");
+          if (params == null) {
+            break;
+          }
           String str = "Prime(" + params + ")";
           outputArea.setText(str);
-          outputArea.append(" ".repeat(25 - str.length()));
+          outputArea.append(" ".repeat(28 - str.length()));
           callbackHelper("prime " + Utils.removeAllChar(params, ' '));
           break;
         }
@@ -191,9 +198,12 @@ public class LoadedCalculatorView extends JFrame implements ILoadedCalculatorVie
               null,
               null,
               "");
+          if (params == null) {
+            break;
+          }
           String str = "Exp(" + params + ")";
           outputArea.setText(str);
-          outputArea.append(" ".repeat(25 - str.length()));
+          outputArea.append(" ".repeat(28 - str.length()));
           callbackHelper("exp " + Utils.removeAllChar(params, ' '));
           break;
         }
@@ -207,9 +217,12 @@ public class LoadedCalculatorView extends JFrame implements ILoadedCalculatorVie
               null,
               null,
               "");
+          if (params == null) {
+            break;
+          }
           String str = "Mod(" + params + ")";
           outputArea.setText(str);
-          outputArea.append(" ".repeat(25 - str.length()));
+          outputArea.append(" ".repeat(28 - str.length()));
           callbackHelper("mod " + Utils.removeAllChar(params, ' '));
           break;
         }
@@ -223,9 +236,12 @@ public class LoadedCalculatorView extends JFrame implements ILoadedCalculatorVie
               null,
               null,
               "");
+          if (params == null) {
+            break;
+          }
           String str = "LogBaseN(" + params + ")";
           outputArea.setText(str);
-          outputArea.append(" ".repeat(25 - str.length()));
+          outputArea.append(" ".repeat(28 - str.length()));
           callbackHelper("logBaseN " + Utils.removeAllChar(params, ' '));
           break;
         }
@@ -239,9 +255,12 @@ public class LoadedCalculatorView extends JFrame implements ILoadedCalculatorVie
               null,
               null,
               "");
+          if (params == null) {
+            break;
+          }
           String str = "log(" + params + ")";
           outputArea.setText(str);
-          outputArea.append(" ".repeat(25 - str.length()));
+          outputArea.append(" ".repeat(28 - str.length()));
           callbackHelper("log " + Utils.removeAllChar(params, ' '));
           break;
         }
@@ -255,9 +274,12 @@ public class LoadedCalculatorView extends JFrame implements ILoadedCalculatorVie
               null,
               null,
               "");
+          if (params == null) {
+            break;
+          }
           String str = "ln(" + params + ")";
           outputArea.setText(str);
-          outputArea.append(" ".repeat(25 - str.length()));
+          outputArea.append(" ".repeat(28 - str.length()));
           callbackHelper("ln " + Utils.removeAllChar(params, ' '));
           break;
         }
@@ -265,15 +287,19 @@ public class LoadedCalculatorView extends JFrame implements ILoadedCalculatorVie
           String mode = modeBox.getItemAt(modeBox.getSelectedIndex()).substring(0, 3);
           String params = (String) JOptionPane.showInputDialog(
               this,
-              "Please enter a value in " + mode + ": ",
+              "Please enter a value in " + mode + ": \n"
+              + "Please use \"(-)\" if you want a negative number, not just \"-\"",
               "Sin",
               JOptionPane.PLAIN_MESSAGE,
               null,
               null,
               "");
+          if (params == null) {
+            break;
+          }
           String str = "sin(" + params + ")";
           outputArea.setText(str);
-          outputArea.append(" ".repeat(25 - str.length()));
+          outputArea.append(" ".repeat(28 - str.length()));
           callbackHelper("sin " + Utils.removeAllChar(params, ' ') + " " + mode);
           break;
         }
@@ -281,15 +307,19 @@ public class LoadedCalculatorView extends JFrame implements ILoadedCalculatorVie
           String mode = modeBox.getItemAt(modeBox.getSelectedIndex()).substring(0, 3);
           String params = (String) JOptionPane.showInputDialog(
               this,
-              "Please enter a value in " + mode + ": ",
+              "Please enter a value in " + mode + ": \n"
+                  + "Please use \"(-)\" if you want a negative number, not just \"-\"",
               "Cos",
               JOptionPane.PLAIN_MESSAGE,
               null,
               null,
               "");
+          if (params == null) {
+            break;
+          }
           String str = "cos(" + params + ")";
           outputArea.setText(str);
-          outputArea.append(" ".repeat(25 - str.length()));
+          outputArea.append(" ".repeat(28 - str.length()));
           callbackHelper("cos " + Utils.removeAllChar(params, ' ') + " " + mode);
           break;
         }
@@ -297,15 +327,19 @@ public class LoadedCalculatorView extends JFrame implements ILoadedCalculatorVie
           String mode = modeBox.getItemAt(modeBox.getSelectedIndex()).substring(0, 3);
           String params = (String) JOptionPane.showInputDialog(
               this,
-              "Please enter a value in " + mode + ": ",
+              "Please enter a value in " + mode + ": \n"
+                  + "Please use \"(-)\" if you want a negative number, not just \"-\"",
               "Tan",
               JOptionPane.PLAIN_MESSAGE,
               null,
               null,
               "");
+          if (params == null) {
+            break;
+          }
           String str = "tan(" + params + ")";
           outputArea.setText(str);
-          outputArea.append(" ".repeat(25 - str.length()));
+          outputArea.append(" ".repeat(28 - str.length()));
           callbackHelper("tan " + Utils.removeAllChar(params, ' ') + " " + mode);
           break;
         }
@@ -318,9 +352,12 @@ public class LoadedCalculatorView extends JFrame implements ILoadedCalculatorVie
               null,
               null,
               "");
+          if (params == null) {
+            break;
+          }
           String str = "cAdd(" + params + ")";
           outputArea.setText(str);
-          outputArea.append(" ".repeat(25 - str.length()));
+          outputArea.append(" ".repeat(28 - str.length()));
           callbackHelper("cAdd " + Utils.removeAllChar(params, ' '));
           break;
         }
@@ -333,9 +370,12 @@ public class LoadedCalculatorView extends JFrame implements ILoadedCalculatorVie
               null,
               null,
               "");
+          if (params == null) {
+            break;
+          }
           String str = "cSub(" + params + ")";
           outputArea.setText(str);
-          outputArea.append(" ".repeat(25 - str.length()));
+          outputArea.append(" ".repeat(28 - str.length()));
           callbackHelper("cSub " + Utils.removeAllChar(params, ' '));
           break;
         }
@@ -348,9 +388,12 @@ public class LoadedCalculatorView extends JFrame implements ILoadedCalculatorVie
               null,
               null,
               "");
+          if (params == null) {
+            break;
+          }
           String str = "cMultiply(" + params + ")";
           outputArea.setText(str);
-          outputArea.append(" ".repeat(25 - str.length()));
+          outputArea.append(" ".repeat(28 - str.length()));
           callbackHelper("cMultiply " + Utils.removeAllChar(params, ' '));
           break;
         }
@@ -363,9 +406,12 @@ public class LoadedCalculatorView extends JFrame implements ILoadedCalculatorVie
               null,
               null,
               "");
+          if (params == null) {
+            break;
+          }
           String str = "cDivide(" + params + ")";
           outputArea.setText(str);
-          outputArea.append(" ".repeat(25 - str.length()));
+          outputArea.append(" ".repeat(28 - str.length()));
           callbackHelper("cDivide " + Utils.removeAllChar(params, ' '));
           break;
         }
@@ -378,9 +424,12 @@ public class LoadedCalculatorView extends JFrame implements ILoadedCalculatorVie
               null,
               null,
               "");
+          if (params == null) {
+            break;
+          }
           String str = "cRemainder(" + params + ")";
           outputArea.setText(str);
-          outputArea.append(" ".repeat(25 - str.length()));
+          outputArea.append(" ".repeat(28 - str.length()));
           callbackHelper("cRemainder " + Utils.removeAllChar(params, ' '));
           break;
         }
@@ -393,26 +442,34 @@ public class LoadedCalculatorView extends JFrame implements ILoadedCalculatorVie
               null,
               null,
               "");
+          if (params == null) {
+            break;
+          }
           String str = "cNorm(" + params + ")";
           outputArea.setText(str);
-          outputArea.append(" ".repeat(25 - str.length()));
+          outputArea.append(" ".repeat(28 - str.length()));
           callbackHelper("cNorm " + Utils.removeAllChar(params, ' '));
           break;
         }
         case "Linear Combination": {
           String params = (String) JOptionPane.showInputDialog(
               this,
-              "Please enter three numbers separated by commas, with the first being between 0 and 1, inclusive: (ex. 0.5,1,10)\n"
-                  + "Computes the linear combination with the given ratio between the other two values.\n"
-                  + "Entering 0.5,0,10 would yield 5 as it is 50% of the way from 0->10.",
+              "Please enter three numbers separated by commas, "
+                  + "with the first being between 0 and 1, inclusive: (ex. 0.5,1,10)\n"
+                  + "Computes the linear combination "
+                  + "with the given ratio between the other two values.\n"
+                  + "Entering 0.5,0,10 would yield 5 as it is 50% of the way from 0->10.\n",
               "Linear Combination",
               JOptionPane.PLAIN_MESSAGE,
               null,
               null,
               "");
+          if (params == null) {
+            break;
+          }
           String str = "linCom(" + params + ")";
           outputArea.setText(str);
-          outputArea.append(" ".repeat(25 - str.length()));
+          outputArea.append(" ".repeat(28 - str.length()));
           callbackHelper("linCom " + Utils.removeAllChar(params, ' '));
           break;
         }
@@ -426,10 +483,89 @@ public class LoadedCalculatorView extends JFrame implements ILoadedCalculatorVie
               null,
               null,
               "");
+          if (params == null) {
+            break;
+          }
           String str = "abs(" + params + ")";
           outputArea.setText(str);
-          outputArea.append(" ".repeat(25 - str.length()));
+          outputArea.append(" ".repeat(28 - str.length()));
           callbackHelper("abs " + Utils.removeAllChar(params, ' '));
+          break;
+        }
+        case "Factor a Quadratic": {
+          String params = (String) JOptionPane.showInputDialog(
+              this,
+              "Please enter three numbers separated by commas: (1,3,2)\n"
+                  + "Entering 1,3,2 will return the factored form of x^2 + 3x + 2.\n"
+                  + "Please use \"(-)\" if you want a negative number, not just \"-\"",
+              "Factoring a Quadratic",
+              JOptionPane.PLAIN_MESSAGE,
+              null,
+              null,
+              "");
+          if (params == null) {
+            break;
+          }
+          String str = "quadFact(" + params + ")";
+          outputArea.setText(str);
+          outputArea.append(" ".repeat(28 - str.length()));
+          callbackHelper("quadFact " + Utils.removeAllChar(params, ' '));
+          break;
+        }
+        case "Factorial" : {
+          String params = (String) JOptionPane.showInputDialog(
+              this,
+              "Please enter a non-negative integer: ",
+              "Factorial",
+              JOptionPane.PLAIN_MESSAGE,
+              null,
+              null,
+              "");
+          if (params == null) {
+            break;
+          }
+          String str = "factorial(" + params + ")";
+          outputArea.setText(str);
+          outputArea.append(" ".repeat(28 - str.length()));
+          callbackHelper("fact " + Utils.removeAllChar(params, ' '));
+          break;
+        }
+        case "Combination" : {
+          String params = (String) JOptionPane.showInputDialog(
+              this,
+              "Please enter two non-negative integers separated by a comma: (ex. 6,4)\n"
+                  + "Entering 6,4 would return 6C4 which is equal to 6! / (4! * (6-4)!) = 15",
+              "Combination",
+              JOptionPane.PLAIN_MESSAGE,
+              null,
+              null,
+              "");
+          if (params == null) {
+            break;
+          }
+          String str = "nCr(" + params + ")";
+          outputArea.setText(str);
+          outputArea.append(" ".repeat(28 - str.length()));
+          callbackHelper("nCr " + Utils.removeAllChar(params, ' '));
+          break;
+        }
+        case "Permutation" : {
+          String params = (String) JOptionPane.showInputDialog(
+              this,
+              "Please enter two non-negative integers separated by a comma: (ex. 6,4)\n"
+              + "Entering 6,4 would return 6P4 which is equal to 6! / (6-4)! = 360",
+              "Permutation",
+              JOptionPane.PLAIN_MESSAGE,
+              null,
+              null,
+              "");
+          if (params == null) {
+            break;
+          }
+          String str = "nPr(" + params + ")";
+          outputArea.setText(str);
+          outputArea.append(" ".repeat(28 - str.length()));
+          callbackHelper("nPr " + Utils.removeAllChar(params, ' '));
           break;
         }
         case "exit": {
@@ -448,7 +584,7 @@ public class LoadedCalculatorView extends JFrame implements ILoadedCalculatorVie
       String equation = inputArea.getText();
       inputArea.setText("");
       outputArea.setText(equation);
-      outputArea.append(" ".repeat(25 - equation.length()));
+      outputArea.append(" ".repeat(28 - equation.length()));
       callbackHelper("equal " + equation);
     });
 
@@ -495,7 +631,12 @@ public class LoadedCalculatorView extends JFrame implements ILoadedCalculatorVie
     if (result.endsWith(".0")) {
       result = result.substring(0, result.length() - 2);
     }
-    String a = " ".repeat(25 - result.length());
+    String a = "";
+    try {
+      a = " ".repeat(28 - result.length());
+    } catch (IllegalArgumentException e) {
+      //do nothing
+    }
     outputArea.append(a);
     outputArea.append(result);
   }

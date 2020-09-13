@@ -14,7 +14,7 @@ public interface ILoadedCalculatorController {
    * "gcd" <br> "lcm" <br> "prime" <br> "mod" <br> "exp" <br> "log" <br> "ln" <br> "logBaseN" <br>
    * "sin" <br> "cos" <br> "tan"
    * <br> "cAdd" <br> "cSub" <br> "cMultiply" <br> "cDivide" <br> "cRemainder" <br> "cNorm"
-   * <br> "precision" <br> "getAns" <br> "linCom" <br> "abs" <br>
+   * <br> "precision" <br> "getAns" <br> "linCom" <br> "abs" <br> "quadFact" <br> "fact" <br>
    * </p>
    *
    * @param s    the name of the command.

@@ -52,9 +52,14 @@ public class TextualView implements ILoadedCalculatorView {
         Utils.complexFromString(result);
         Utils.safeAppend(ap, " = " + result + "\n");
       } catch (IllegalArgumentException iae) {
-        Utils.safeAppend(ap, result);
-        if (result.contains("precision")) {
-          Utils.safeAppend(ap, "\n");
+        if(result.contains("(x")) {
+          Utils.safeAppend(ap, " = " + result + "\n");
+        }
+        else {
+          Utils.safeAppend(ap, result);
+          if (result.contains("precision")) {
+            Utils.safeAppend(ap, "\n");
+          }
         }
       }
     }

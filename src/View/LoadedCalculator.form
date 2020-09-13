@@ -5,7 +5,10 @@
     <constraints>
       <xy x="20" y="20" width="747" height="323"/>
     </constraints>
-    <properties/>
+    <properties>
+      <background color="-15051849"/>
+      <foreground color="-4496640"/>
+    </properties>
     <border type="none"/>
     <children>
       <component id="50851" class="javax.swing.JButton" binding="number8">
@@ -209,12 +212,13 @@
           </grid>
         </constraints>
         <properties>
-          <autoscrolls value="false"/>
+          <autoscrolls value="true"/>
+          <background color="-12091697"/>
           <columns value="2"/>
           <dropMode value="USE_SELECTION"/>
           <editable value="false"/>
           <enabled value="true"/>
-          <font name="Andale Mono" size="16" style="0"/>
+          <font name="Andale Mono" size="15" style="0"/>
           <lineWrap value="true"/>
           <rows value="2"/>
           <text value=""/>
@@ -270,7 +274,8 @@
           </grid>
         </constraints>
         <properties>
-          <continuousLayout value="false"/>
+          <background color="-15051849"/>
+          <continuousLayout value="true"/>
           <dividerLocation value="100"/>
           <dividerSize value="0"/>
           <enabled value="false"/>
@@ -305,10 +310,11 @@
           </grid>
         </constraints>
         <properties>
+          <background color="-12091697"/>
           <columns value="2"/>
           <editable value="false"/>
           <enabled value="true"/>
-          <font name="Andale Mono" size="16" style="0"/>
+          <font name="Andale Mono" size="15" style="0"/>
           <lineWrap value="true"/>
           <rows value="2"/>
         </properties>
@@ -322,7 +328,8 @@
           </grid>
         </constraints>
         <properties>
-          <continuousLayout value="true"/>
+          <background color="-12091697"/>
+          <continuousLayout value="false"/>
           <dividerLocation value="15"/>
           <dividerSize value="1"/>
           <font name="Andale Mono" size="8" style="0"/>
@@ -372,6 +379,7 @@
           </grid>
         </constraints>
         <properties>
+          <background color="-15051849"/>
           <dividerSize value="0"/>
           <orientation value="1"/>
         </properties>

@@ -80,7 +80,8 @@ public class LoadedCalculatorController implements ILoadedCalculatorController, 
         .replace("e", String.valueOf(Math.E));
     if (params.contains("ans")) {
 
-      String ans = String.valueOf(this.model.getAns());
+      double d = this.model.getAns();
+      String ans =  d < 0 ? "(-)" + Math.abs(d) : String.valueOf(d);
 
       for (int i = 0; i < params.length() - 2; i++) {
         String str = params.substring(i, i + 3);
@@ -92,6 +93,7 @@ public class LoadedCalculatorController implements ILoadedCalculatorController, 
               try {
                 Double.parseDouble(String.valueOf(params.charAt(i + 3)));
               } catch (NumberFormatException | StringIndexOutOfBoundsException nfe) {
+
                 params = params.substring(0, i) + ans + params.substring(i + 3);
               }
             }
@@ -308,11 +310,72 @@ public class LoadedCalculatorController implements ILoadedCalculatorController, 
           throw new IllegalArgumentException("Invalid arguments given!");
         }
       });
-
       commands.put("abs", () -> {
         try {
           double d = Utils.equationSolver(args, model);
           double ans = model.abs(d);
+          view.acceptResult(String.valueOf(ans));
+        } catch (StringIndexOutOfBoundsException e) {
+          throw new IllegalArgumentException("Invalid arguments given!");
+        }
+      });
+      commands.put("quadFact", () -> {
+        try {
+          double a = Utils.equationSolver(args.substring(0, args.indexOf(",")), model);
+          double b = Utils.equationSolver(
+              args.substring(args.indexOf(",") + 1, args.lastIndexOf(",")), model);
+          double c = Utils.equationSolver(args.substring(args.lastIndexOf(",") + 1), model);
+          double[] ans = model.quadraticFormula(a / a, b / a, c / a);
+          ans[0] = -1 * ans[0];
+          ans[1] = -1 * ans[1];
+          String answer = Math.abs(a - 1) < Math.pow(10, -1 * model.getPrecision())
+              ? ""
+              : String.valueOf(a);
+          try {
+            double i = ans[2];
+            answer += ans[0] < 0 ? "(x-" + Math.abs(ans[1]) + "i)" : "(x+" + ans[0] + "i)";
+            if (Math.abs(ans[0] - ans[1]) < Math.pow(10, -1 * model.getPrecision())) {
+              answer += "^2";
+            } else {
+              answer += ans[1] < 0 ? "(x-" + Math.abs(ans[1]) + "i)" : "(x+" + ans[1] + "i)";
+            }
+          } catch (ArrayIndexOutOfBoundsException e) {
+             answer += ans[0] < 0 ? "(x-" + Math.abs(ans[1]) + ")" : "(x+" + ans[0] + ")";
+            if (Math.abs(ans[0] - ans[1]) < Math.pow(10, -1 * model.getPrecision())) {
+              answer += "^2";
+            } else {
+              answer += ans[1] < 0 ? "(x-" + Math.abs(ans[1]) + ")" : "(x+" + ans[1] + ")";
+            }
+          }
+          view.acceptResult(answer);
+        } catch (StringIndexOutOfBoundsException e) {
+          throw new IllegalArgumentException("Invalid arguments given!");
+        }
+      });
+      commands.put("fact", () -> {
+        try {
+          int i = Integer.parseInt(args);
+          long ans = model.factorial(i);
+          view.acceptResult(String.valueOf(ans));
+        } catch (StringIndexOutOfBoundsException e) {
+          throw new IllegalArgumentException("Invalid arguments given!");
+        }
+      });
+      commands.put("nCr", () -> {
+        try {
+          int n = Integer.parseInt(args.substring(0, args.indexOf(",")));
+          int r = Integer.parseInt(args.substring(args.indexOf(",") + 1));
+          long ans = model.combination(n, r);
+          view.acceptResult(String.valueOf(ans));
+        } catch (StringIndexOutOfBoundsException e) {
+          throw new IllegalArgumentException("Invalid arguments given!");
+        }
+      });
+      commands.put("nPr", () -> {
+        try {
+          int n = Integer.parseInt(args.substring(0, args.indexOf(",")));
+          int r = Integer.parseInt(args.substring(args.indexOf(",") + 1));
+          long ans = model.permutation(n, r);
           view.acceptResult(String.valueOf(ans));
         } catch (StringIndexOutOfBoundsException e) {
           throw new IllegalArgumentException("Invalid arguments given!");
@@ -329,7 +392,7 @@ public class LoadedCalculatorController implements ILoadedCalculatorController, 
       });
       commands.put("equal", () -> {
         try {
-          double ans = Utils.equationSolver(args, model);
+          double ans = model.round(Utils.equationSolver(args, model));
           view.acceptResult(String.valueOf(ans));
         } catch (StringIndexOutOfBoundsException e) {
           throw new IllegalArgumentException("Invalid arguments given!");
