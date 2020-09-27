@@ -82,6 +82,9 @@ public class LoadedCalculatorController implements ILoadedCalculatorController, 
 
       double d = this.model.getAns();
       String ans =  d < 0 ? "(-)" + Math.abs(d) : String.valueOf(d);
+      if(params.equals("ans")) {
+        model.add(0, d);
+      }
 
       for (int i = 0; i < params.length() - 2; i++) {
         String str = params.substring(i, i + 3);
@@ -106,8 +109,6 @@ public class LoadedCalculatorController implements ILoadedCalculatorController, 
           }
         }
       }
-
-      //params = params.replace("ans", String.valueOf(this.model.getAns()));
     }
     processCommand(cmd, params);
   }

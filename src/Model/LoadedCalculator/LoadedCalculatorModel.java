@@ -154,7 +154,6 @@ public class LoadedCalculatorModel implements ILoadedCalculatorModel {
   public String complexAdd(int a1, int b1, int a2, int b2) {
     int bNew = b1 + b2;
     String ans = (a1 + a2) + (bNew < 0 ? "-" : "+") + Math.abs(bNew) + "i";
-    //answers.push(ans);
     return ans;
   }
 
@@ -162,7 +161,6 @@ public class LoadedCalculatorModel implements ILoadedCalculatorModel {
   public String complexSub(int a1, int b1, int a2, int b2) {
     int bNew = b1 - b2;
     String ans = (a1 - a2) + (bNew < 0 ? "-" : "+") + Math.abs(bNew) + "i";
-    //answers.push(ans);
     return ans;
   }
 
@@ -170,7 +168,6 @@ public class LoadedCalculatorModel implements ILoadedCalculatorModel {
   public String complexMulti(int a1, int b1, int a2, int b2) {
     int bNew = ((a1 * b2) + (a2 * b1));
     String ans = ((a1 * a2) - (b1 * b2)) + (bNew < 0 ? "-" : "+") + Math.abs(bNew) + "i";
-    //answers.push(ans);
     return ans;
   }
 
@@ -186,7 +183,6 @@ public class LoadedCalculatorModel implements ILoadedCalculatorModel {
     int bNew = (int) Math.round((bFinal + 0.0) / (Math.pow(this.complexNorm(a2, b2), 2)));
 
     String ans = aNew + (bNew < 0 ? "-" : "+") + Math.abs(bNew) + "i";
-    //answers.push(ans);
     return ans;
   }
 
@@ -207,7 +203,6 @@ public class LoadedCalculatorModel implements ILoadedCalculatorModel {
     int bRemainder = hold[1];
 
     String remainder = this.complexSub(a1, b1, aRemainder, bRemainder);
-    //answers.push(remainder);
     return ans + " remainder: " + remainder;
   }
 
@@ -297,7 +292,6 @@ public class LoadedCalculatorModel implements ILoadedCalculatorModel {
   @Override
   public double round(double d) {
     double ans = calc.round(d);
-    //answers.push(ans);
     return ans;
   }
 
