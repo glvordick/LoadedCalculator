@@ -73,14 +73,14 @@ public class Utils {
    * @return A copy of the string with the given characters removed.
    */
   public static String removeAllChar(String str, char c) {
-    String ans = str;
+    StringBuilder ans = new StringBuilder(str);
     for (int i = 0; i < ans.length() - 1; i++) {
       if (ans.charAt(i) == c) {
-        ans = ans.substring(0, i) + ans.substring(i + 1);
+        ans.deleteCharAt(i);
         i--;
       }
     }
-    return ans;
+    return ans.toString();
   }
 
   /**
